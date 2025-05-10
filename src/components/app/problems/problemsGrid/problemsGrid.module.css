@@ -1,0 +1,44 @@
+.problemRow {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.problemRow::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.15);
+  z-index: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  transition: background-color 0.3s ease;
+}
+
+.problemFocused {
+  position: relative;
+  background-color: #f9fafb;
+  border: 2px solid #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.ProblemsNodesParentContainer {
+  display: flex;
+  overflow-y: auto;
+  max-height: calc(100vh - 10rem);
+  width: 100%;
+
+  & .ProblemsNodeContainer {
+    width: 50%;
+  }
+
+  @media (max-width: 1024px) and (orientation: landscape) {
+    flex-direction: column;
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+}
