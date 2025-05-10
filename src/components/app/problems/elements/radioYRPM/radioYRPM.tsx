@@ -1,6 +1,5 @@
 import React, { FC, useEffect, useRef, useState } from 'react'
 import gsap from "gsap";
-import { FaRegDotCircle } from 'react-icons/fa';
 import { FaX } from 'react-icons/fa6';
 
 import module from "./radioYRPM.module.css"
