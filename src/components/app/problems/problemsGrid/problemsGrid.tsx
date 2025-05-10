@@ -1,11 +1,10 @@
 import { FC, useEffect, useState } from 'react'
 import module from './problemsGrid.module.css'
-import { FaBars, FaChevronLeft, FaChevronRight, FaSearch } from 'react-icons/fa'
+import { FaChevronLeft, FaSearch } from 'react-icons/fa'
 import ProgressBar from '@ramonak/react-progress-bar'
 import { FaTableCells, FaX } from 'react-icons/fa6'
 import { MdTableRows } from 'react-icons/md'
 import Swal from 'sweetalert2'
-import { problemaRadioyRPM } from '../../../../functions/problems'
 
 export interface IProblem {
     id: number
@@ -29,7 +28,7 @@ interface IProblemsGrid {
     idProblemResolved: number
 }
 
-const ProblemsGrid: FC<IProblemsGrid> = ({ problems, sekeerValue, sortBy, pageSize, idProblemResolved }) => {
+const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved }) => {
 
     const [typeView, setTypeView] = useState<"cells" | "rows">("rows")
 
@@ -55,7 +54,7 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, sekeerValue, sortBy, pageSi
 
     const unFocusInProblem = (focusedProblemId: number) => {
 
-        if (problemResolved) {
+        if (problemResolved && problemResolvedId !== focusedProblemId) {
 
             Swal.fire({
                 title: '¿Quieres salir de este problema?',
