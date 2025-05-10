@@ -83,7 +83,7 @@ GiroTierra.GraphNode = () => {
     )
 }
 
-GiroTierra.Solution = ({ va, vl, theta30, a, f, ac }) => {
+GiroTierra.Solution = ({ va, vl, theta30, a }) => {
     return (
         <div className="flex flex-col gap-6 bg-white rounded-xl shadow-md p-6 border border-gray-200 w-full max-w-3xl">
             <h2 className="text-2xl font-bold text-blue-700">Solución paso a paso</h2>
