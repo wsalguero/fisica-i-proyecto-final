@@ -18,4 +18,7 @@ export default defineConfig({
   },
   // 👇 IMPORTANTE para Vercel y SPAs
   base: "/",
+  optimizeDeps: {
+    include: ["three"],
+  },
 });
