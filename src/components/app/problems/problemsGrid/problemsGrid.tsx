@@ -16,7 +16,6 @@ export interface IProblem {
     tags?: string[]
     form: JSX.Element
     solution: JSX.Element
-    calcs: string[],
     tagName: string;
 }
 
@@ -90,7 +89,7 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved }) => {
 
     return (
         <div className='w-full h-full'>
-            <div className={`${module.ProblemsFilter} flex flex-wrap items-center justify-between bg-white shadow-sm rounded p-4 gap-4`}>
+            <div className={`${module.ProblemsFilter} flex flex-wrap items-center justify-between bg-white shadow-sm rounded p-4 gap-4 mb-5`}>
                 <ul className='flex gap-4'>
                     <li className={`bg-gray-200 rounded-l p-2 border border-gray-300`}>
                         <button className={`text-gray-500 hover:text-gray-700`} onClick={() => (setTypeView("cells"))}><FaTableCells /></button>
@@ -188,27 +187,60 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved }) => {
                                             }}
 
                                         >
-                                            <div className="flex justify-between items-center w-full">
-                                                <div className="w-1/2">
-                                                    <h1 className="text-gray-800">{problem.title}</h1>
-                                                    <p>{problem.description}</p>
+                                            <div className={`${module.ProblemContentHeader} w-full flex flex-col md:flex-row justify-between items-start md:items-center gap-4`}>
+                                                {/* Título + Tags + Descripción */}
+                                                <div className="flex flex-col gap-1">
+                                                    <div className="flex items-center flex-wrap gap-2">
+                                                        <h1 className="text-gray-800 text-2xl font-bold">
+                                                            {problem.title}
+                                                        </h1>
+
+                                                        {problem.tags && problem.tags.length > 0 && (
+                                                            <div className="flex flex-wrap gap-2">
+                                                                {problem.tags.map((tag, index) => (
+                                                                    <span
+                                                                        key={index}
+                                                                        className="bg-purple-200 hover:bg-purple-300 text-gray-700 rounded-full px-3 py-1 text-xs font-semibold transition-all"
+                                                                    >
+                                                                        {tag}
+                                                                    </span>
+                                                                ))}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                    <p className="text-gray-500 text-sm">{problem.description}</p>
                                                 </div>
-                                                <div className="text-gray-500 flex items-center gap-2">
-                                                    <ProgressBar completed={problem.dificulty} maxCompleted={100} />
+
+                                                {/* Barra de dificultad + Botón cerrar */}
+                                                <div className="flex items-center gap-4 ml-auto">
+                                                    {/* Puedes personalizar el texto según el valor */}
+                                                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                                                        <span className="font-medium">Dificultad:</span>
+                                                        <div className="w-32">
+                                                            <ProgressBar completed={problem.dificulty} maxCompleted={100} />
+                                                        </div>
+                                                    </div>
 
                                                     {isFocused && (
                                                         <button
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
-                                                                unFocusInProblem(problem.id, problem.tagName);
+                                                                debugger
+                                                                if (problemResolvedId === problem.id && problemResolved && problemResolvedId > 0) {
+                                                                    unFocusInProblem(problem.id, problem.tagName);
+                                                                    return;
+                                                                }
+                                                                setFocusedProblemId(null);
+                                                                setProblemResolved(false);
                                                             }}
-                                                            className="rounded p-2 cursor-pointer"
+                                                            className="p-2 hover:bg-red-100 rounded-full transition-all"
                                                         >
-                                                            <FaX className="text-red-400 hover:text-red-500" />
+                                                            <FaX className="text-red-400 hover:text-red-600 text-lg" />
                                                         </button>
                                                     )}
                                                 </div>
                                             </div>
+
                                             <div className={`${module.ProblemsNodesParentContainer} mt-4`}>
                                                 <div className={`${module.ProblemsNodeContainer}`}>{problem.form}</div>
                                                 <div className={`${module.ProblemsNodeContainer}`}>{problem.graphNode}</div>

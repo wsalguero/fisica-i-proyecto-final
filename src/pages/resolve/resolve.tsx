@@ -90,9 +90,9 @@ const Resolve = () => {
                 <div className="text-gray-400 italic">Calcula para ver la solución...</div>
             )
             ,
-            calcs: ["Hii", "Hii", "Hii"],
             graphNode: <RadioYRPM.GraphNode radio={0.5} rpm={180} />,
             tagName: "ryrpm",
+            tags: ["mcu", "rpm", "radio", "velocidad angular", "velocidad lineal"],
         },
         {
             id: 2,
@@ -116,7 +116,6 @@ const Resolve = () => {
                 <div className="text-gray-400 italic">Calcula para ver la solución...</div>
             ),
 
-            calcs: [],
             graphNode: <GiroTierra.GraphNode />,
             tagName: "girotierra",
         }
