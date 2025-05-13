@@ -16,7 +16,8 @@ export interface IProblem {
     tags?: string[]
     form: JSX.Element
     solution: JSX.Element
-    calcs: string[]
+    calcs: string[],
+    tagName: string;
 }
 
 
@@ -52,9 +53,10 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved }) => {
         setCleanSeeker(false)
     }
 
-    const unFocusInProblem = (focusedProblemId: number) => {
 
-        if (problemResolved && problemResolvedId !== focusedProblemId) {
+    const unFocusInProblem = (focusedProblemId: number, tagName: string) => {
+
+        if (problemResolvedId !== focusedProblemId || problemResolved || problemResolvedId > 0) {
 
             Swal.fire({
                 title: '¿Quieres salir de este problema?',
@@ -67,7 +69,17 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved }) => {
                 if (result.isConfirmed) {
                     setFocusedProblemId(null)
                     setProblemResolved(false)
-                    // Swal.fire('¡Eliminado!', 'Tu elemento ha sido eliminado.', 'success');
+                    setProblemResolvedId(0)
+                    setShowSolution(false)
+
+                    const inputsByProblem = document.querySelectorAll(`input[data-tagname="${tagName}"]`);
+
+                    inputsByProblem.forEach((input) => {
+                        if (input instanceof HTMLInputElement) {
+                            input.value = "";
+                        }
+                    });
+                    return;
                 }
             });
         } else {
@@ -97,7 +109,6 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved }) => {
                             <a
                                 className={`bg-white rounded-l border border-gray-300 p-2 hover:bg-gray-50`}
                                 onClick={() => setCleanSeeker(true)}
-                                href='javascript:void()'
                                 type='button'
                             >
                                 <FaX className={`text-gray-400 hover:text-gray-500 `} />
@@ -105,7 +116,6 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved }) => {
                             :
                             <a
                                 className={`bg-white rounded-l border border-gray-300 p-2 hover:bg-gray-50`}
-                                href='javascript:void()'
                                 type='button'
                             >
                                 <FaSearch className={`text-gray-400 hover:text-gray-500`} />
@@ -143,6 +153,8 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved }) => {
                         {problems.map((problem, index) => {
                             const isFocused = focusedProblemId === problem.id;
 
+
+
                             useEffect(() => {
                                 if (idProblemResolved > 0) {
                                     setProblemResolved(true);
@@ -154,12 +166,28 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved }) => {
                             return (
                                 <div
                                     key={index}
-                                    className={`relative flex flex-col bg-white shadow-sm rounded p-4 m-2 transition-all duration-300 ease-in-out  ${isFocused ? module.problemFocused : module.problemRow}`}
-                                    onClick={() => setFocusedProblemId(problem.id)}
+                                    className={`relative flex flex-col shadow-sm rounded transition-all duration-300 ease-in-out h-[60vh] ${isFocused ? module.problemFocused : module.problemNoFocus} `}
+                                    onClick={(e) => {
+
+                                        e.stopPropagation();
+                                        if (problemResolvedId !== problem.id && problemResolved && problemResolvedId > 0) {
+                                            unFocusInProblem(problem.id, problem.tagName);
+                                            return;
+                                        }
+                                        setFocusedProblemId(problem.id);
+                                    }}
                                 >
 
-                                    <div className={`$`}>
-                                        <div>
+                                    <div className={`${module.ProblemContainer}`}>
+                                        <div className={`${module.ProblemContentContainer} transition-all duration-300 ease-in-out h-full 
+                                            ${showSolution && idProblemResolved === problem.id ? "hidden" : ""}`
+                                        }
+
+                                            style={{
+                                                width: problemResolvedId === problem.id && problemResolved ? "calc(100% - 25px)" : "100%",
+                                            }}
+
+                                        >
                                             <div className="flex justify-between items-center w-full">
                                                 <div className="w-1/2">
                                                     <h1 className="text-gray-800">{problem.title}</h1>
@@ -172,7 +200,7 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved }) => {
                                                         <button
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
-                                                                unFocusInProblem(problem.id);
+                                                                unFocusInProblem(problem.id, problem.tagName);
                                                             }}
                                                             className="rounded p-2 cursor-pointer"
                                                         >
@@ -184,48 +212,61 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved }) => {
                                             <div className={`${module.ProblemsNodesParentContainer} mt-4`}>
                                                 <div className={`${module.ProblemsNodeContainer}`}>{problem.form}</div>
                                                 <div className={`${module.ProblemsNodeContainer}`}>{problem.graphNode}</div>
-
-                                                {(showSolution && idProblemResolved === problem.id) ? (
-                                                    <div className="absolute top-0 left-0 w-full h-full bg-white bg-opacity-95 p-6 rounded shadow-2xl z-50 flex flex-col items-center justify-center">
-                                                        <button
-                                                            className="absolute top-2 right-2 text-gray-500 hover:text-red-500"
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                setShowSolution(false);
-                                                            }}
-                                                        >
-                                                            <FaX />
-                                                        </button>
-                                                        {problem.solution}
-                                                    </div>
-
-                                                ) : null}
-
                                             </div>
                                         </div>
-                                        {
-                                            problemResolvedId === problem.id && (
-                                                <div>
-                                                    <button
-                                                        className="w-[25px] rounded p-2 cursor-pointer bg-gray-200 hover:bg-gray-300"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            setShowSolution(!showSolution);
-                                                        }}
-                                                    >
-                                                        <FaChevronLeft />
-                                                    </button>
-                                                </div>
-                                            )
-                                        }
+                                        <div
+                                            className={`flex transition-all duration-500 ease-in-out h-full ${showSolution && idProblemResolved === problem.id ? "w-full" : ""}`}
+                                        >
+                                            {
+                                                problemResolvedId === problem.id && (
+                                                    <>
+                                                        <div className={`flex`}>
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    setShowSolution(!showSolution);
+                                                                }}
+                                                                className={`${module.ViewSolutionButton} w-[25px] h-full p-2 cursor-pointer bg-white transition-all duration-300 ease-in-out  text-center
+                                                                    ${showSolution ? module.ButtonSolutionOpen : module.ButtonSolutionClose}`}
+                                                            >
+                                                                <FaChevronLeft className={`transition-transform duration-300 ease-in-out ${showSolution ? 'rotate-180' : ''}`} />
+                                                            </button>
+
+                                                        </div>
+
+
+                                                        {(showSolution && idProblemResolved === problem.id) ? (
+                                                            <div style={{}} className='w-full h-full overflow-y-auto transition-all duration-300 ease-in-out'>
+                                                                <button
+                                                                    className="absolute top-2 right-6 text-gray-500 hover:text-red-500"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        setShowSolution(false);
+                                                                    }}
+                                                                >
+                                                                    <FaX />
+                                                                </button>
+                                                                <div className='w-full h-full transition-all duration-300 ease-in-out'>
+                                                                    {problem.solution}
+                                                                </div>
+                                                            </div>
+                                                        ) : null}
+                                                    </>
+
+
+
+                                                )
+                                            }
+                                        </div>
                                     </div>
                                 </div>
                             );
                         })}
                     </div>
-                )}
-            </section>
-        </div>
+                )
+                }
+            </section >
+        </div >
     )
 }
 

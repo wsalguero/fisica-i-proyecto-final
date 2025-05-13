@@ -91,7 +91,8 @@ const Resolve = () => {
             )
             ,
             calcs: ["Hii", "Hii", "Hii"],
-            graphNode: <RadioYRPM.GraphNode radio={0.5} rpm={180} />
+            graphNode: <RadioYRPM.GraphNode radio={0.5} rpm={180} />,
+            tagName: "ryrpm",
         },
         {
             id: 2,
@@ -117,6 +118,7 @@ const Resolve = () => {
 
             calcs: [],
             graphNode: <GiroTierra.GraphNode />,
+            tagName: "girotierra",
         }
 
 

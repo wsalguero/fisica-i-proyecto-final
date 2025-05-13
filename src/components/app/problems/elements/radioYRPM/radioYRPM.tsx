@@ -46,6 +46,7 @@ RadioYRPM.Form = ({ onSubmit, problem_id }) => {
                 type="hidden"
                 id="problem_id"
                 name="problem_id"
+                data-tagname="ryrpm"
                 value={problem_id}
             />
             <div className="flex flex-col">
@@ -58,6 +59,7 @@ RadioYRPM.Form = ({ onSubmit, problem_id }) => {
                     name="radio"
                     step="any"
                     placeholder="Ej: 0.5"
+                    data-tagname="ryrpm"
                     className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
                     required
                 />
@@ -72,6 +74,7 @@ RadioYRPM.Form = ({ onSubmit, problem_id }) => {
                     id="rpm"
                     name="rpm"
                     placeholder="Ej: 180"
+                    data-tagname="ryrpm"
                     className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
                     required
                 />
@@ -87,6 +90,7 @@ RadioYRPM.Form = ({ onSubmit, problem_id }) => {
     );
 };
 
+
 RadioYRPM.GraphNode = () => {
     const ruedaRef = useRef<HTMLDivElement>(null);
     const animRef = useRef<gsap.core.Tween | null>(null);
@@ -94,6 +98,7 @@ RadioYRPM.GraphNode = () => {
     const [radio, setRadio] = useState<number>(0.5);
     const [rpm, setRpm] = useState<number>(180);
     const [isRunning, setIsRunning] = useState<boolean>(true);
+    const [zoomLevel, setZoomLevel] = useState<number>(1);
 
     const sizePx = radio * 200;
 
@@ -101,9 +106,8 @@ RadioYRPM.GraphNode = () => {
         const el = ruedaRef.current;
         if (!el || rpm <= 0) return;
 
-        // Detener animación previa
         animRef.current?.kill();
-        gsap.set(el, { rotate: 0 }); // Reiniciar a rotación 0
+        gsap.set(el, { rotate: 0 });
 
         const duracion = 60 / rpm;
 
@@ -119,8 +123,7 @@ RadioYRPM.GraphNode = () => {
     useEffect(() => {
         if (isRunning) iniciarAnimacion();
         else animRef.current?.pause();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [rpm, isRunning]); // Se reinicia solo si cambia rpm o se reanuda
+    }, [rpm, isRunning]);
 
     const toggleAnimation = () => {
         if (isRunning) {
@@ -131,64 +134,78 @@ RadioYRPM.GraphNode = () => {
         setIsRunning(!isRunning);
     };
 
+    const increaseZoom = () => setZoomLevel(prev => Math.min(prev + 0.1, 3));
+    const decreaseZoom = () => setZoomLevel(prev => Math.max(prev - 0.1, 0.3));
+
     return (
-        <div className="flex flex-col gap-4 items-center p-6 rounded-lg shadow-lg bg-white border border-gray-200 max-w-md mx-auto">
+        <div className="flex flex-col gap-4 items-center p-6 max-w-full">
             <h2 className="text-xl font-semibold text-blue-700">Simulación de rueda</h2>
 
-            <div
-                ref={ruedaRef}
-                className="relative flex items-center justify-center border-[10px] border-gray-800 rounded-full bg-gradient-to-br from-blue-300 to-blue-500 shadow-inner"
-                style={{
-                    width: `${sizePx}px`,
-                    height: `${sizePx}px`,
-                }}
-            >
-                <FaX className="text-white text-4xl drop-shadow" />
-            </div>
+            <div className={`${module.GraphNodeContainer}`}>
+                {/* Inputs y Botones */}
+                <div className={`flex flex-col gap-4 ${module.GraphNodeForm}`}>
+                    <div className="flex flex-col">
+                        <label className="text-sm font-medium text-gray-700 mb-1" htmlFor="radio">Radio (m)</label>
+                        <input
+                            id="radio"
+                            type="number"
+                            step="any"
+                            value={radio}
+                            onChange={(e) => setRadio(parseFloat(e.target.value))}
+                            className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        />
+                    </div>
 
-            <div className="w-full flex flex-col gap-4 mt-4">
-                <div className="flex flex-col">
-                    <label className="text-sm font-medium text-gray-700 mb-1" htmlFor="radio">
-                        Radio (m)
-                    </label>
-                    <input
-                        id="radio"
-                        type="number"
-                        step="any"
-                        value={radio}
-                        onChange={(e) => setRadio(parseFloat(e.target.value))}
-                        className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    />
+                    <div className="flex flex-col">
+                        <label className="text-sm font-medium text-gray-700 mb-1" htmlFor="rpm">RPM</label>
+                        <input
+                            id="rpm"
+                            type="number"
+                            value={rpm}
+                            onChange={(e) => setRpm(parseFloat(e.target.value))}
+                            className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        />
+                    </div>
+
+                    <button
+                        onClick={toggleAnimation}
+                        className={`mt-2 px-4 py-2 rounded text-white transition-colors ${isRunning ? "bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600"}`}
+                    >
+                        {isRunning ? "Pausar animación" : "Reanudar animación"}
+                    </button>
+
+                    <div className="flex gap-2 mt-2">
+                        <button onClick={decreaseZoom} className="w-full py-2 bg-gray-200 hover:bg-gray-300 rounded text-xl font-bold">−</button>
+                        <button onClick={increaseZoom} className="w-full py-2 bg-gray-200 hover:bg-gray-300 rounded text-xl font-bold">+</button>
+                    </div>
                 </div>
 
-                <div className="flex flex-col">
-                    <label className="text-sm font-medium text-gray-700 mb-1" htmlFor="rpm">
-                        RPM
-                    </label>
-                    <input
-                        id="rpm"
-                        type="number"
-                        value={rpm}
-                        onChange={(e) => setRpm(parseFloat(e.target.value))}
-                        className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    />
+                <div className={`flex justify-center items-center overflow-auto border rounded p-4 bg-gray-50 ${module.GraphNodeWeels}`}>
+                    <div
+                        style={{ transform: `scale(${zoomLevel})`, transformOrigin: "center" }}
+                        className={`flex items-center justify-center w-full h-full`}
+                    >
+                        <div
+                            ref={ruedaRef}
+                            className="relative flex items-center justify-center border-[10px] border-gray-800 rounded-full bg-gradient-to-br from-blue-300 to-blue-500 shadow-inner"
+                            style={{
+                                width: `${sizePx}px`,
+                                height: `${sizePx}px`,
+                            }}
+                        >
+                            <FaX className="text-white text-4xl drop-shadow" />
+                        </div>
+                    </div>
                 </div>
-
-                <button
-                    onClick={toggleAnimation}
-                    className={`mt-2 px-4 py-2 rounded text-white transition-colors ${isRunning ? "bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600"
-                        }`}
-                >
-                    {isRunning ? "Pausar animación" : "Reanudar animación"}
-                </button>
             </div>
         </div>
     );
 };
 
+
 RadioYRPM.Solution = ({ vARad, vALin, f, radio }) => {
     return (
-        <div className="flex flex-col gap-6 bg-white rounded-xl shadow-md p-6 border border-gray-200">
+        <div className="flex flex-col gap-6 bg-white shadow-md p-6 border border-gray-200 w-full">
             <h2 className="text-2xl font-bold text-blue-700">Solución paso a paso</h2>
 
             <div className="space-y-4 text-gray-800">
