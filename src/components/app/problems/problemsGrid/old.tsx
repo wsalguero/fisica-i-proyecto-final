@@ -32,17 +32,18 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
 
     const [typeView, setTypeView] = useState<"cells" | "rows">("rows")
 
+    const [isFocusInSeeker, setIsFocusInSeeker] = useState(false)
     const [cleanSekeer, setCleanSeeker] = useState(false);
     const [focusedProblemId, setFocusedProblemId] = useState<number | null>(null);
     const [problemResolved, setProblemResolved] = useState<boolean>(false);
     const [showSolution, setShowSolution] = useState(false);
     const [problemResolvedId, setProblemResolvedId] = useState<number>(0);
     const [clearSearch, setClearSearch] = useState(false);
-    const [invalidSeekerValue, setInvalidSeekerValue] = useState(false);
 
     useEffect(() => {
         const sekeer = document.getElementById("SekeerInput") as HTMLInputElement;
         sekeer.value = ""
+        setIsFocusInSeeker(false)
         setClearSearch(false);
 
         document.getElementById("SekeerInput")?.focus();
@@ -50,14 +51,12 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
     }, [cleanSekeer])
 
     const handleInputSekeer = () => {
-
+        setIsFocusInSeeker(true)
         setCleanSeeker(false)
-        setClearSearch(false);
-
     }
 
+
     const unFocusInProblem = (focusedProblemId: number, tagName: string) => {
-        ;
 
         if (problemResolvedId !== focusedProblemId || problemResolved || problemResolvedId > 0) {
 
@@ -82,36 +81,16 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
                             input.value = "";
                         }
                     });
-
-                    localStorage.clear();
-
                     return;
                 }
             });
         } else {
             setFocusedProblemId(null)
             setProblemResolved(false)
-
-            const inputsByProblem = document.querySelectorAll(`input[data-tagname="${tagName}"]`);
-
-            inputsByProblem.forEach((input) => {
-                if (input instanceof HTMLInputElement) {
-                    input.value = "";
-                }
-            });
-
-            localStorage.clear();
         }
-
     }
 
     const handleInputSearch = () => {
-        const sekeerInput = document.getElementById("SekeerInput") as HTMLInputElement | null;
-        if (sekeerInput?.value === "") {
-            setInvalidSeekerValue(true);
-            return;
-
-        }
 
         function hideRows() {
             const sekeer = document.getElementById("SekeerInput") as HTMLInputElement;
@@ -119,9 +98,7 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
             const problemsGrid = document.getElementById("ProblemsGrid") as HTMLDivElement;
             const problems = problemsGrid.querySelectorAll(`.ProblemsGrid__ProblemParentNode`);
 
-
             problems.forEach((problem) => {
-
 
                 const title = problem.querySelector(`.ProblemsGrid__ProblemTitle`)?.textContent?.toLowerCase() || "";
                 const description = problem.querySelector(`.ProblemsGrid__ProblemDescription`)?.textContent?.toLowerCase() || "";
@@ -159,8 +136,6 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
                         }
                     });
 
-                    localStorage.clear();
-
                     setTimeout(() => {
                         hideRows();
                     }, 0);
@@ -182,6 +157,7 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
         function showRows() {
             const sekeer = document.getElementById("SekeerInput") as HTMLInputElement;
             sekeer.value = ""
+            setIsFocusInSeeker(false)
             setCleanSeeker(true)
             setClearSearch(false);
 
@@ -214,27 +190,43 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
             showRows();
         }
     }
-
     return (
         <div className='w-full h-full'>
-            <div className={`${module.ProblemsFilter} flex items-center justify-between bg-white shadow-sm rounded gap-4 mb-5`}>
-                <div className="h-full p-4">
-                    <h1 className={`text-2xl font-bold`}>Simulador de problemas</h1>
-                </div>
+            <div className={`${module.ProblemsFilter} flex flex-wrap items-center justify-between bg-white shadow-sm rounded p-4 gap-4 mb-5`}>
+                <ul className='flex gap-4'>
+                    {/* <li className={`bg-gray-200 rounded-l p-2 border border-gray-300`}>
+                        <button className={`text-gray-500 hover:text-gray-700`} onClick={() => (setTypeView("cells"))}><FaTableCells /></button>
+                    </li> */}
+                    <li className={`bg-white rounded-l p-2 border border-gray-300`}>
+                        <button className={`text-gray-500 hover:text-gray-700`} onClick={() => (setTypeView("rows"))}><MdTableRows /></button>
+                    </li>
+                </ul>
 
-                <div className={`h-full flex rounded shadow-sm justify-end ${module.SekeerContainer}`} id="ProblemsSeeker">
-                    <div className='flex items-center justify-center h-full'>
-                        <input type="text" placeholder="Buscar solucion" className={`${module.SekeerInput}`} onInput={() => handleInputSekeer()} id="SekeerInput" />
+                <div className={`flex rounded bg-white shadow-sm justify-end`} id="ProblemsSeeker">
+                    <div className='flex items-center justify-center'>
+
+                        {isFocusInSeeker ?
+
+                            <a
+                                className={`bg-white rounded-l border border-gray-300 p-2 hover:bg-gray-50 cursor-pointer`}
+                                onClick={() => setCleanSeeker(true)}
+                                type='button'
+                            >
+                                <FaX className={`text-gray-400 hover:text-gray-500 `} />
+                            </a>
+                            :
+                            null
+                        }
+                        <input type="text" placeholder="Search" className={``} onInput={() => handleInputSekeer()} id="SekeerInput" />
+
 
                         <button
-                            className={`bg-white rounded-l border border-gray-300 p-4 hover:bg-gray-50 cursor-pointer h-full flex items-center justify-center`}
+                            className={`bg-white rounded-l border border-gray-300 p-2 hover:bg-gray-50 cursor-pointer`}
                             type='button'
                             onClick={(e) => {
 
                                 console.log("click")
                                 e.stopPropagation();
-
-
 
                                 if (clearSearch) {
                                     handleClearSearh();
@@ -252,12 +244,36 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
                 </div>
             </div>
 
-            <section id='ProblemsGrid' className={`w-full ${module.ProblemsGrid}`}>
+            <section id='ProblemsGrid'>
+
+                {typeView === "cells" && (
+                    <>
+                        <table>
+                            <tbody>
+                                {problems.map((problem, index) => (
+                                    <tr key={index}>
+                                        <td className={``}>
+                                            <div className={``}>
+                                                <div className={``}>{problem.title}</div>
+                                                <div className={``}>{problem.description}</div>
+                                                <div className={``}>Dificulty: {problem.dificulty}</div>
+                                                <button onClick={problem.functionToResolve} className={`bg-blue-500 text-white rounded p-2`}>Resolve</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </>
+                )}
 
                 {typeView === "rows" && (
-                    <div className={`flex flex-col gap-5`}>
+                    <div className={``}>
                         {problems.map((problem, index) => {
                             const isFocused = focusedProblemId === problem.id;
+
+
+
                             useEffect(() => {
                                 if (idProblemResolved > 0) {
                                     setProblemResolved(true);
@@ -269,13 +285,10 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
                             return (
                                 <div
                                     key={index}
-                                    className={`relative flex flex-col shadow-sm rounded transition-all duration-300 ease-in-out h-[50vh] ProblemsGrid__ProblemParentNode ${isFocused ? module.problemFocused : module.problemNoFocus} `}
+                                    className={`relative flex flex-col shadow-sm rounded transition-all duration-300 ease-in-out h-[60vh] ProblemsGrid__ProblemParentNode ${isFocused ? module.problemFocused : module.problemNoFocus} `}
                                     onClick={(e) => {
 
                                         e.stopPropagation();
-
-
-
                                         if (problemResolvedId !== problem.id && problemResolved && problemResolvedId > 0) {
                                             unFocusInProblem(problem.id, problem.tagName);
                                             return;
@@ -286,7 +299,7 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
 
                                     <div className={`${module.ProblemContainer}`}>
                                         <div className={`${module.ProblemContentContainer} transition-all duration-300 ease-in-out h-full 
-                                            ${showSolution && idProblemResolved === problem.id ? "hidden" : "flex"}`
+                                            ${showSolution && idProblemResolved === problem.id ? "hidden" : ""}`
                                         }
 
                                             style={{
@@ -294,7 +307,7 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
                                             }}
 
                                         >
-                                            <div className={`${module.ProblemContentHeader} w-full flex flex-col md:flex-row justify-between items-start md:items-center gap-4 ${showSolution ? "hidden" : ""}`}>
+                                            <div className={`${module.ProblemContentHeader} w-full flex flex-col md:flex-row justify-between items-start md:items-center gap-4`}>
                                                 {/* Título + Tags + Descripción */}
                                                 <div className="flex flex-col gap-1">
                                                     <div className="flex items-center flex-wrap gap-2">
@@ -336,16 +349,6 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
                                                                 if (problemResolvedId === problem.id && problemResolved && problemResolvedId > 0) {
                                                                     unFocusInProblem(problem.id, problem.tagName);
                                                                     return;
-                                                                } else {
-                                                                    const inputsByProblem = document.querySelectorAll(`input[data-tagname="${problem.tagName}"]`);
-
-                                                                    inputsByProblem.forEach((input) => {
-                                                                        if (input instanceof HTMLInputElement) {
-                                                                            input.value = "";
-                                                                        }
-                                                                    });
-                                                                    localStorage.clear();
-
                                                                 }
                                                                 setFocusedProblemId(null);
                                                                 setProblemResolved(false);
