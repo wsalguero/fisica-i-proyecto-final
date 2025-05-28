@@ -1,8 +1,7 @@
 @import "tailwindcss";
 
 body {
-  position: relative;
-  height: auto !important;
+  background-color: #f5eef1; /* Light gray background */
 }
 
 body:before {

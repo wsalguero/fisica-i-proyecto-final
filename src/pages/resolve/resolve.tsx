@@ -66,8 +66,6 @@ const Resolve = () => {
         setIdProblemResolved(2);
     };
 
-
-
     const problems: IProblem[] = [
         {
             id: 1,
@@ -125,17 +123,9 @@ const Resolve = () => {
 
 
     return (
-        <>
-            <div className="w-full h-full">
-                <h1 className={`text-2xl font-bold`}>Resolviendo problemas</h1>
-                <p className={`text-gray-500`}>Aquí puedes resolver problemas de Movimiento circular uniforme (m.c.u.)</p>
-            </div>
-
-            <div className="w-full h-full">
-                <ProblemsGrid problems={problems} pageSize={10} idProblemResolved={idProblemResolved} />
-            </div>
-
-        </>
+        <div className="w-full h-full">
+            <ProblemsGrid problems={problems} pageSize={10} idProblemResolved={idProblemResolved} />
+        </div>
     )
 }
 

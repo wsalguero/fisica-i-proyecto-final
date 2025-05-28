@@ -39,6 +39,7 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
     const [showSolution, setShowSolution] = useState(false);
     const [problemResolvedId, setProblemResolvedId] = useState<number>(0);
     const [clearSearch, setClearSearch] = useState(false);
+    const [invalidSeekerValue, setInvalidSeekerValue] = useState(false);
 
     useEffect(() => {
         const sekeer = document.getElementById("SekeerInput") as HTMLInputElement;
@@ -91,6 +92,15 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
     }
 
     const handleInputSearch = () => {
+
+        const sekeerInput = document.getElementById("SekeerInput") as HTMLInputElement | null;
+        if (sekeerInput?.value === "") {
+            setInvalidSeekerValue(true);
+            return;
+
+        }
+
+
 
         function hideRows() {
             const sekeer = document.getElementById("SekeerInput") as HTMLInputElement;
@@ -192,23 +202,18 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
     }
     return (
         <div className='w-full h-full'>
-            <div className={`${module.ProblemsFilter} flex flex-wrap items-center justify-between bg-white shadow-sm rounded p-4 gap-4 mb-5`}>
-                <ul className='flex gap-4'>
-                    {/* <li className={`bg-gray-200 rounded-l p-2 border border-gray-300`}>
-                        <button className={`text-gray-500 hover:text-gray-700`} onClick={() => (setTypeView("cells"))}><FaTableCells /></button>
-                    </li> */}
-                    <li className={`bg-white rounded-l p-2 border border-gray-300`}>
-                        <button className={`text-gray-500 hover:text-gray-700`} onClick={() => (setTypeView("rows"))}><MdTableRows /></button>
-                    </li>
-                </ul>
+            <div className={`${module.ProblemsFilter} flex items-center justify-between bg-white shadow-sm rounded gap-4 mb-5`}>
+                <div className="h-full p-4">
+                    <h1 className={`text-2xl font-bold`}>Simulador de problemas</h1>
+                </div>
 
-                <div className={`flex rounded bg-white shadow-sm justify-end`} id="ProblemsSeeker">
-                    <div className='flex items-center justify-center'>
+                <div className={`h-full flex rounded shadow-sm justify-end ${module.SekeerContainer}`} id="ProblemsSeeker">
+                    <div className='flex items-center justify-center h-full'>
 
                         {isFocusInSeeker ?
 
                             <a
-                                className={`bg-white rounded-l border border-gray-300 p-2 hover:bg-gray-50 cursor-pointer`}
+                                className={`bg-white rounded-l border border-gray-300 p-4 hover:bg-gray-50 cursor-pointer h-full flex items-center justify-center ${invalidSeekerValue ? 'border-red' : ''}`}
                                 onClick={() => setCleanSeeker(true)}
                                 type='button'
                             >
@@ -217,11 +222,11 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
                             :
                             null
                         }
-                        <input type="text" placeholder="Search" className={``} onInput={() => handleInputSekeer()} id="SekeerInput" />
+                        <input type="text" placeholder="Buscar solucion" className={`${module.SekeerInput}`} onInput={() => handleInputSekeer()} id="SekeerInput" />
 
 
                         <button
-                            className={`bg-white rounded-l border border-gray-300 p-2 hover:bg-gray-50 cursor-pointer`}
+                            className={`bg-white rounded-l border border-gray-300 p-4 hover:bg-gray-50 cursor-pointer h-full flex items-center justify-center`}
                             type='button'
                             onClick={(e) => {
 
@@ -244,7 +249,7 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
                 </div>
             </div>
 
-            <section id='ProblemsGrid'>
+            <section id='ProblemsGrid' className={`w-full ${module.ProblemsGrid}`}>
 
                 {typeView === "cells" && (
                     <>
@@ -268,12 +273,9 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
                 )}
 
                 {typeView === "rows" && (
-                    <div className={``}>
+                    <div className={`flex flex-col gap-5`}>
                         {problems.map((problem, index) => {
                             const isFocused = focusedProblemId === problem.id;
-
-
-
                             useEffect(() => {
                                 if (idProblemResolved > 0) {
                                     setProblemResolved(true);
@@ -285,7 +287,7 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
                             return (
                                 <div
                                     key={index}
-                                    className={`relative flex flex-col shadow-sm rounded transition-all duration-300 ease-in-out h-[60vh] ProblemsGrid__ProblemParentNode ${isFocused ? module.problemFocused : module.problemNoFocus} `}
+                                    className={`relative flex flex-col shadow-sm rounded transition-all duration-300 ease-in-out h-[50vh] ProblemsGrid__ProblemParentNode ${isFocused ? module.problemFocused : module.problemNoFocus} `}
                                     onClick={(e) => {
 
                                         e.stopPropagation();
