@@ -1,64 +1,70 @@
 const Home = () => {
     return (
-        <div className="px-6 py-10 space-y-40 relative text-black">
+        <div>
+            <h1 className="text-3xl font-bold text-center mt-10">Bienvenido al simulador de Movimiento Circular Uniforme</h1>
+            <p className="text-center mt-4 text-gray-600">
+                Esta aplicación te permite resolver problemas relacionados con el movimiento circular uniforme, como calcular la velocidad angular, lineal y más.
+            </p>
+            <div className="mt-8 flex justify-center">
+                <a href="/resolve" className="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
+                    Comenzar a Resolver
+                </a>
+            </div>
 
-            {/* Botón (queda por si acaso, pero puedes comentar si aún no lo usás) */}
-            <button
-                className="fixed top-5 right-5 z-50 px-4 py-2 bg-red-600 text-white rounded-md shadow-md"
-                onClick={() => { }}
-            >
-                Pausar animaciones
-            </button>
-
-            {/* Sección de bienvenida */}
-            <section className="h-[100vh] flex flex-col items-center justify-center text-center space-y-4 max-w-3xl mx-auto">
-                <h1 className="text-5xl font-bold drop-shadow-sm">Simulador de MCU</h1>
-                <p className="text-lg text-gray-800 max-w-2xl mx-auto">
-                    Explora y comprende el Movimiento Circular Uniforme y Variable con ejemplos interactivos y visuales.
-                </p>
-
-
-            </section>
-
-            <section className="h-[100vh] text-center">
-                <div className="flex items-center justify-center gap-8 p-6 rounded-xl">
-                    <div className="max-w-lg text-start">
-                        <h2 className="text-3xl font-bold mb-4">¿Qué es el Movimiento Circular Uniforme?</h2>
-                        <p className="text-gray-700">
-                            El MCU ocurre cuando un objeto gira a velocidad constante. Su trayectoria es circular y mantiene una aceleración centrípeta constante.
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis, earum perspiciatis suscipit animi fuga ipsam eligendi praesentium reiciendis cupiditate tempora ea maiores quos, totam cumque obcaecati voluptatibus ex. Dolorem, esse? Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat labore dicta tempore aut exercitationem et sint in ipsum esse adipisci sequi quidem, corrupti quis reprehenderit rem, rerum tenetur sit obcaecati?
-                        </p>
-                    </div>
-
-
-                    <div>
-                        <nav>
-                            <ul className="">
-                                <li
-                                    className="px-4 py-2 bg-blue-200 text-white rounded-md hover:bg-blue-400 transition-colors mb-2"
-                                >
-                                    <a
-                                        href="/resolve"
-                                    >
-                                        Resolver problemas
-                                    </a>
-                                </li>
-                                <li
-                                    className="px-4 py-2 bg-blue-200 text-white rounded-md hover:bg-blue-400 transition-colors"
-                                >
-                                    <a
-                                        href="/team"
-                                    >
-                                        Conoce al equipo
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
+            <div>
+                <div>
+                    <h1>Pero... Que es el MCU?</h1>
                 </div>
-            </section>
+
+                <div>
+                    <p>
+                        El Movimiento Circular Uniforme (MCU) es un tipo de movimiento en el que un objeto se desplaza a lo largo de una trayectoria circular con una velocidad constante. En este tipo de movimiento, la magnitud de la velocidad no cambia, pero la dirección del vector velocidad sí lo hace continuamente, ya que el objeto está en una trayectoria curva.
+                    </p>
+                </div>
+            </div>
+
+            <div>
+                <div><h1>Como se descubrio el MCU?</h1></div>
+
+                <div>
+                    <p>
+                        El concepto de Movimiento Circular Uniforme ha sido estudiado desde la antigüedad, pero uno de los primeros en formalizarlo fue el filósofo griego Aristóteles. Sin embargo, fue con el trabajo de científicos como Galileo Galilei y Johannes Kepler en los siglos XVI y XVII que se comenzaron a entender mejor las leyes del movimiento y la gravedad, sentando las bases para la física clásica.
+                    </p>
+                </div>
+            </div>
+
+            <div>
+                <div><h1>¿Para qué sirve el MCU?</h1></div>
+
+                <div>
+                    <p>
+                        El estudio del Movimiento Circular Uniforme es fundamental en la física y la ingeniería, ya que muchos sistemas físicos, como los satélites, ruedas y engranajes, operan bajo este principio. Comprender el MCU permite predecir el comportamiento de estos sistemas y diseñar mecanismos eficientes.
+                    </p>
+                </div>
+            </div>
+
+            <div>
+                <div><h1>Lo vemos en nuestra vida cotidiana</h1></div>
+                <div>
+                    <p>
+                        El Movimiento Circular Uniforme se observa en muchos aspectos de nuestra vida diaria, como en el movimiento de las ruedas de un automóvil, el giro de un carrusel o el movimiento de los planetas alrededor del sol. Estos ejemplos ilustran cómo el MCU es una parte integral de nuestro entorno y cómo las leyes del movimiento circular se aplican en diversas situaciones.
+                    </p>
+                </div>
+            </div>
+
+            <div>
+                <div>
+                    <h1>Objetivo del proyecto</h1>
+                </div>
+                <div>
+                    <p>
+                        El objetivo de este proyecto es proporcionar una herramienta interactiva para resolver problemas relacionados con el Movimiento Circular Uniforme. A través de esta aplicación, los usuarios podrán calcular la velocidad angular, lineal, el radio y otros parámetros del MCU, facilitando el aprendizaje y la comprensión de este concepto fundamental en la física.
+                    </p>
+                </div>
+            </div>
+
         </div>
-    );
-};
+    )
+}
 
 export default Home;

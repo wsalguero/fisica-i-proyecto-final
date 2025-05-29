@@ -1,0 +1,20 @@
+.Nav {
+  background-color: #3c2d7e;
+}
+
+.Option {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #ffffff;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+  &:hover {
+    background-color: #4a3f9c;
+    box-shadow: 0px 4px 20px rgba(60, 45, 126, 0.2);
+    border: 1px solid #ffffff;
+    scale: 1.05;
+  }
+}
