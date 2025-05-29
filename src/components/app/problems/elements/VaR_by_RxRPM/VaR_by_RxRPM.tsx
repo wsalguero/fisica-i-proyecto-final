@@ -11,11 +11,15 @@ const VaR_by_RxRPM = () => {
 
 VaR_by_RxRPM.Form = () => {
     const [vA, setVA] = React.useState<string>("");
+    const [prevRPM, setPrevRPM] = React.useState<number | null>(null);
+    const [formKey, setFormKey] = React.useState(0);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const form = new FormData(e.currentTarget);
         const rpm = parseFloat(form.get("rpm") as string);
+        setPrevRPM(rpm);
+
         const frecuencia = rpm / 60;
         const velocidadAngular = 2 * Math.PI * frecuencia;
 
@@ -26,54 +30,37 @@ VaR_by_RxRPM.Form = () => {
 
         window.dispatchEvent(new Event("update:VaR_by_RxRPM__velocidadAngular"));
         window.dispatchEvent(new Event("problem:resolved"));
+
+        setFormKey(prev => prev + 1);
     };
 
     return (
-        <form className="flex flex-col gap-4 bg-white p-6 border border-gray-200 shadow-md rounded-md w-full max-w-md mx-auto" onSubmit={handleSubmit}>
+        <form key={formKey} className="flex flex-col gap-4 bg-white p-6 border border-gray-200 shadow-md rounded-md w-full" onSubmit={handleSubmit}>
             <h2 className="text-xl font-semibold text-blue-600">Ingresar datos</h2>
 
             <div className="flex flex-col">
                 <label htmlFor="radio" className="text-sm font-medium text-gray-700 mb-1">Radio (m):</label>
-                <input
-                    type="number"
-                    id="radio"
-                    name="radio"
-                    step="any"
-                    placeholder="Ej: 0.5"
-                    className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    required
-                    data-tagname="va-r-rpm"
-                />
+                <input type="number" id="radio" name="radio" step="any" placeholder="Ej: 0.5" className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" required />
             </div>
 
             <div className="flex flex-col">
                 <label htmlFor="rpm" className="text-sm font-medium text-gray-700 mb-1">RPM:</label>
-                <input
-                    type="number"
-                    id="rpm"
-                    name="rpm"
-                    placeholder="Ej: 180"
-                    className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    required
-                    data-tagname="va-r-rpm"
-                />
+                <input type="number" id="rpm" name="rpm" placeholder="Ej: 180" className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" required />
             </div>
 
-            <button
-                type="submit"
-                className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
-            >
-                Calcular
-            </button>
+            <button type="submit" className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors">Calcular</button>
+
+            {prevRPM !== null && (
+                <p className="text-sm text-gray-500 mt-2">Último valor ingresado: <strong>{prevRPM} rpm</strong></p>
+            )}
 
             {vA && (
-                <p className="text-sm text-gray-500 mt-2">
-                    Resultado preliminar: <strong className="text-blue-600">{vA}</strong>
-                </p>
+                <p className="text-sm text-gray-500 mt-1">Resultado preliminar: <strong className="text-blue-600">{vA}</strong></p>
             )}
         </form>
     );
 };
+
 
 
 VaR_by_RxRPM.GraphNode = () => {

@@ -3,7 +3,6 @@ import module from './problemsGrid.module.css'
 import { FaChevronLeft, FaSearch, FaSearchMinus } from 'react-icons/fa'
 import ProgressBar from '@ramonak/react-progress-bar'
 import { FaX } from 'react-icons/fa6'
-import { MdTableRows } from 'react-icons/md'
 import Swal from 'sweetalert2'
 
 export interface IProblem {
@@ -30,7 +29,6 @@ interface IProblemsGrid {
 
 const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) => {
 
-    const [typeView, setTypeView] = useState<"cells" | "rows">("rows")
 
     const [cleanSekeer, setCleanSeeker] = useState(false);
     const [focusedProblemId, setFocusedProblemId] = useState<number | null>(null);
@@ -50,7 +48,6 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
     }, [cleanSekeer])
 
     const handleInputSekeer = () => {
-
         setCleanSeeker(false)
         setClearSearch(false);
 
@@ -134,7 +131,6 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
             });
         }
 
-
         if (problemResolved || problemResolvedId > 0) {
             Swal.fire({
                 title: '¿Quieres salir de este problema?',
@@ -215,6 +211,12 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
         }
     }
 
+    const getColorByDificulty = (dificulty: number): string => {
+        if (dificulty <= 3) return "#4ade80";   // Verde
+        if (dificulty <= 6) return "#facc15";   // Amarillo
+        if (dificulty <= 8) return "#fb923c";   // Naranja
+        return "#ef4444";                       // Rojo
+    };
     return (
         <div className='w-full h-full'>
             <div className={`${module.ProblemsFilter} flex items-center justify-between bg-white shadow-sm rounded gap-4 mb-5`}>
@@ -224,18 +226,13 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
 
                 <div className={`h-full flex rounded shadow-sm justify-end ${module.SekeerContainer}`} id="ProblemsSeeker">
                     <div className='flex items-center justify-center h-full'>
-                        <input type="text" placeholder="Buscar solucion" className={`${module.SekeerInput}`} onInput={() => handleInputSekeer()} id="SekeerInput" />
+                        <input type="text" placeholder="Buscar solucion" className={`${module.SekeerInput} ${invalidSeekerValue ? "border-red-300" : "border-purple-500"}`} onInput={() => handleInputSekeer()} id="SekeerInput" />
 
                         <button
                             className={`bg-white rounded-l border border-gray-300 p-4 hover:bg-gray-50 cursor-pointer h-full flex items-center justify-center`}
                             type='button'
                             onClick={(e) => {
-
-                                console.log("click")
                                 e.stopPropagation();
-
-
-
                                 if (clearSearch) {
                                     handleClearSearh();
                                     return;
@@ -254,166 +251,169 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
 
             <section id='ProblemsGrid' className={`w-full ${module.ProblemsGrid}`}>
 
-                {typeView === "rows" && (
-                    <div className={`flex flex-col gap-5`}>
-                        {problems.map((problem, index) => {
-                            const isFocused = focusedProblemId === problem.id;
-                            useEffect(() => {
-                                if (idProblemResolved > 0) {
-                                    setProblemResolved(true);
-                                    setProblemResolvedId(idProblemResolved);
-                                }
-                            }, [idProblemResolved]);
+                <div className={`flex flex-col gap-5`}>
+                    {problems.map((problem, index) => {
+                        const isFocused = focusedProblemId === problem.id;
+                        useEffect(() => {
+                            if (idProblemResolved > 0) {
+                                setProblemResolved(true);
+                                setProblemResolvedId(idProblemResolved);
+                            }
+                        }, [idProblemResolved]);
 
 
-                            return (
-                                <div
-                                    key={index}
-                                    className={`relative flex flex-col shadow-sm rounded transition-all duration-300 ease-in-out h-[50vh] ProblemsGrid__ProblemParentNode ${isFocused ? module.problemFocused : module.problemNoFocus} `}
-                                    onClick={(e) => {
+                        return (
+                            <div
+                                key={index}
+                                className={`relative flex flex-col shadow-sm rounded transition-all duration-300 ease-in-out h-[50vh] ProblemsGrid__ProblemParentNode ${isFocused ? module.problemFocused : module.problemNoFocus} `}
+                                onClick={(e) => {
 
-                                        e.stopPropagation();
+                                    e.stopPropagation();
 
 
 
-                                        if (problemResolvedId !== problem.id && problemResolved && problemResolvedId > 0) {
-                                            unFocusInProblem(problem.id, problem.tagName);
-                                            return;
-                                        }
-                                        setFocusedProblemId(problem.id);
-                                    }}
-                                >
+                                    if (problemResolvedId !== problem.id && problemResolved && problemResolvedId > 0) {
+                                        unFocusInProblem(problem.id, problem.tagName);
+                                        return;
+                                    }
+                                    setFocusedProblemId(problem.id);
+                                }}
+                            >
 
-                                    <div className={`${module.ProblemContainer}`}>
-                                        <div className={`${module.ProblemContentContainer} transition-all duration-300 ease-in-out h-full 
+                                <div className={`${module.ProblemContainer}`}>
+                                    <div className={`${module.ProblemContentContainer} transition-all duration-300 ease-in-out h-full 
                                             ${showSolution && idProblemResolved === problem.id ? "hidden" : "flex"}`
-                                        }
+                                    }
 
-                                            style={{
-                                                width: problemResolvedId === problem.id && problemResolved ? "calc(100% - 25px)" : "100%",
-                                            }}
+                                        style={{
+                                            width: problemResolvedId === problem.id && problemResolved ? "calc(100% - 25px)" : "100%",
+                                        }}
 
-                                        >
-                                            <div className={`${module.ProblemContentHeader} w-full flex flex-col md:flex-row justify-between items-start md:items-center gap-4 ${showSolution ? "hidden" : ""}`}>
-                                                {/* Título + Tags + Descripción */}
-                                                <div className="flex flex-col gap-1">
-                                                    <div className="flex items-center flex-wrap gap-2">
-                                                        <h1 className="text-gray-800 text-2xl font-bold ProblemsGrid__ProblemTitle">
-                                                            {problem.title}
-                                                        </h1>
+                                    >
+                                        <div className={`${module.ProblemContentHeader} w-full flex flex-col md:flex-row justify-between items-start md:items-center gap-4 ${showSolution ? "hidden" : ""}`}>
+                                            {/* Título + Tags + Descripción */}
+                                            <div className="flex flex-col gap-1">
+                                                <div className="flex items-center flex-wrap gap-2">
+                                                    <h1 className="text-gray-800 text-2xl font-bold ProblemsGrid__ProblemTitle">
+                                                        {problem.title}
+                                                    </h1>
 
-                                                        {problem.tags && problem.tags.length > 0 && (
-                                                            <div className="flex flex-wrap gap-2">
-                                                                {problem.tags.map((tag, index) => (
-                                                                    <span
-                                                                        key={index}
-                                                                        className="bg-purple-200 hover:bg-purple-300 text-gray-700 rounded-full px-3 py-1 text-xs font-semibold transition-all"
-                                                                    >
-                                                                        {tag}
-                                                                    </span>
-                                                                ))}
-                                                            </div>
-                                                        )}
+                                                    {problem.tags && problem.tags.length > 0 && (
+                                                        <div className="flex flex-wrap gap-2">
+                                                            {problem.tags.map((tag, index) => (
+                                                                <span
+                                                                    key={index}
+                                                                    className="bg-purple-200 hover:bg-purple-300 text-gray-700 rounded-full px-3 py-1 text-xs font-semibold transition-all"
+                                                                >
+                                                                    {tag}
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <p className="text-gray-500 text-sm ProblemsGrid__ProblemDescription">{problem.description}</p>
+                                            </div>
+
+                                            {/* Barra de dificultad + Botón cerrar */}
+                                            <div className="flex items-center gap-4 ml-auto">
+                                                {/* Puedes personalizar el texto según el valor */}
+                                                <div className="flex items-center gap-2 text-sm text-gray-600">
+                                                    <span className="font-medium">Dificultad:</span>
+                                                    <div className="w-32">
+                                                        <ProgressBar
+                                                            completed={problem.dificulty * 10}
+                                                            maxCompleted={100}
+                                                            bgColor={getColorByDificulty(problem.dificulty)}
+                                                            height="10px"
+                                                            baseBgColor="#e5e7eb" // Tailwind gray-200
+                                                            labelClassName="hidden" // Oculta el % si no lo querés
+                                                            isLabelVisible={false}
+                                                        />
                                                     </div>
-                                                    <p className="text-gray-500 text-sm ProblemsGrid__ProblemDescription">{problem.description}</p>
+
                                                 </div>
 
-                                                {/* Barra de dificultad + Botón cerrar */}
-                                                <div className="flex items-center gap-4 ml-auto">
-                                                    {/* Puedes personalizar el texto según el valor */}
-                                                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                                                        <span className="font-medium">Dificultad:</span>
-                                                        <div className="w-32">
-                                                            <ProgressBar completed={problem.dificulty} maxCompleted={100} />
-                                                        </div>
-                                                    </div>
+                                                {isFocused && (
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
 
-                                                    {isFocused && (
+                                                            if (problemResolvedId === problem.id && problemResolved && problemResolvedId > 0) {
+                                                                unFocusInProblem(problem.id, problem.tagName);
+                                                                return;
+                                                            } else {
+                                                                const inputsByProblem = document.querySelectorAll(`input[data-tagname="${problem.tagName}"]`);
+
+                                                                inputsByProblem.forEach((input) => {
+                                                                    if (input instanceof HTMLInputElement) {
+                                                                        input.value = "";
+                                                                    }
+                                                                });
+                                                                localStorage.clear();
+
+                                                            }
+                                                            setFocusedProblemId(null);
+                                                            setProblemResolved(false);
+                                                        }}
+                                                        className="p-2 hover:bg-red-100 rounded-full transition-all"
+                                                    >
+                                                        <FaX className="text-red-400 hover:text-red-600 text-lg" />
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <div className={`${module.ProblemsNodesParentContainer}`}>
+                                            <div className={`${module.ProblemsNodeContainer}`}>{problem.form}</div>
+                                            <div className={`${module.ProblemsNodeContainer}`}>{problem.graphNode}</div>
+                                        </div>
+                                    </div>
+                                    <div
+                                        className={`flex transition-all duration-500 ease-in-out h-full ${showSolution && idProblemResolved === problem.id ? "w-full" : ""}`}
+                                    >
+                                        {
+                                            problemResolvedId === problem.id && (
+                                                <>
+                                                    <div className={`flex`}>
                                                         <button
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
-
-                                                                if (problemResolvedId === problem.id && problemResolved && problemResolvedId > 0) {
-                                                                    unFocusInProblem(problem.id, problem.tagName);
-                                                                    return;
-                                                                } else {
-                                                                    const inputsByProblem = document.querySelectorAll(`input[data-tagname="${problem.tagName}"]`);
-
-                                                                    inputsByProblem.forEach((input) => {
-                                                                        if (input instanceof HTMLInputElement) {
-                                                                            input.value = "";
-                                                                        }
-                                                                    });
-                                                                    localStorage.clear();
-
-                                                                }
-                                                                setFocusedProblemId(null);
-                                                                setProblemResolved(false);
+                                                                setShowSolution(!showSolution);
                                                             }}
-                                                            className="p-2 hover:bg-red-100 rounded-full transition-all"
+                                                            className={`${module.ViewSolutionButton} w-[25px] h-full p-2 cursor-pointer bg-white transition-all duration-300 ease-in-out  text-center
+                                                                    ${showSolution ? module.ButtonSolutionOpen : module.ButtonSolutionClose}`}
                                                         >
-                                                            <FaX className="text-red-400 hover:text-red-600 text-lg" />
+                                                            <FaChevronLeft className={`transition-transform duration-300 ease-in-out ${showSolution ? 'rotate-180' : ''}`} />
                                                         </button>
-                                                    )}
-                                                </div>
-                                            </div>
 
-                                            <div className={`${module.ProblemsNodesParentContainer} mt-4`}>
-                                                <div className={`${module.ProblemsNodeContainer}`}>{problem.form}</div>
-                                                <div className={`${module.ProblemsNodeContainer}`}>{problem.graphNode}</div>
-                                            </div>
-                                        </div>
-                                        <div
-                                            className={`flex transition-all duration-500 ease-in-out h-full ${showSolution && idProblemResolved === problem.id ? "w-full" : ""}`}
-                                        >
-                                            {
-                                                problemResolvedId === problem.id && (
-                                                    <>
-                                                        <div className={`flex`}>
+                                                    </div>
+                                                    {(showSolution && idProblemResolved === problem.id) ? (
+                                                        <div style={{}} className='w-full h-full overflow-y-auto transition-all duration-300 ease-in-out'>
                                                             <button
+                                                                className="absolute top-2 right-6 text-gray-500 hover:text-red-500"
                                                                 onClick={(e) => {
                                                                     e.stopPropagation();
-                                                                    setShowSolution(!showSolution);
+                                                                    setShowSolution(false);
                                                                 }}
-                                                                className={`${module.ViewSolutionButton} w-[25px] h-full p-2 cursor-pointer bg-white transition-all duration-300 ease-in-out  text-center
-                                                                    ${showSolution ? module.ButtonSolutionOpen : module.ButtonSolutionClose}`}
                                                             >
-                                                                <FaChevronLeft className={`transition-transform duration-300 ease-in-out ${showSolution ? 'rotate-180' : ''}`} />
+                                                                <FaX />
                                                             </button>
-
-                                                        </div>
-
-
-                                                        {(showSolution && idProblemResolved === problem.id) ? (
-                                                            <div style={{}} className='w-full h-full overflow-y-auto transition-all duration-300 ease-in-out'>
-                                                                <button
-                                                                    className="absolute top-2 right-6 text-gray-500 hover:text-red-500"
-                                                                    onClick={(e) => {
-                                                                        e.stopPropagation();
-                                                                        setShowSolution(false);
-                                                                    }}
-                                                                >
-                                                                    <FaX />
-                                                                </button>
-                                                                <div className='w-full h-full transition-all duration-300 ease-in-out'>
-                                                                    {problem.solution}
-                                                                </div>
+                                                            <div className='w-full h-full transition-all duration-300 ease-in-out'>
+                                                                {problem.solution}
                                                             </div>
-                                                        ) : null}
-                                                    </>
+                                                        </div>
+                                                    ) : null}
+                                                </>
 
 
 
-                                                )
-                                            }
-                                        </div>
+                                            )
+                                        }
                                     </div>
                                 </div>
-                            );
-                        })}
-                    </div>
-                )
-                }
+                            </div>
+                        );
+                    })}
+                </div>
             </section >
         </div >
     )
