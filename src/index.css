@@ -1,9 +1,20 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
+
 @import "tailwindcss";
 
 body {
-  background-color: #f5eef1; /* Light gray background */
+  position: relative;
+  height: auto !important;
+  background-color: #ffffff;
+  font-family: "Inter", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell",
+    "Open Sans", "Helvetica Neue", sans-serif;
+  transition: all 0.3s ease;
 }
-/* 
+
+button {
+  cursor: pointer;
+}
+
 body:before {
   content: "";
   position: absolute;
@@ -14,7 +25,7 @@ body:before {
   background-image: url("/src/assets/bgLayout.webp");
   background-size: cover;
   background-position: center;
-  background-attachment: fixed;
-  z-index: -1;
-  filter: opacity(0.155);
-} */
+  background-attachment: fixed; /* Efecto parallax */
+  z-index: -1; /* Asegura que esté detrás del contenido */
+  filter: opacity(0.155); /* Aplica opacidad solo al fondo */
+}

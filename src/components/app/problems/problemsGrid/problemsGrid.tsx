@@ -29,6 +29,7 @@ interface IProblemsGrid {
 
 const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) => {
 
+    const [isMobile, setIsMobile] = useState(false);
 
     const [cleanSekeer, setCleanSeeker] = useState(false);
     const [focusedProblemId, setFocusedProblemId] = useState<number | null>(null);
@@ -47,6 +48,21 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
 
     }, [cleanSekeer])
 
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const handleResize = () => {
+                setIsMobile(window.innerWidth <= 768);
+            };
+
+            handleResize();
+            window.addEventListener("resize", handleResize);
+
+            return () => {
+                window.removeEventListener("resize", handleResize);
+            };
+        }
+    }, []);
+
     const handleInputSekeer = () => {
         setCleanSeeker(false)
         setClearSearch(false);
@@ -60,7 +76,6 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
 
             Swal.fire({
                 title: '¿Quieres salir de este problema?',
-                text: 'Deberas ingresar los datos de nuevo.',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Sí, salir',
@@ -134,7 +149,6 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
         if (problemResolved || problemResolvedId > 0) {
             Swal.fire({
                 title: '¿Quieres salir de este problema?',
-                text: 'Deberas ingresar los datos de nuevo.',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Sí, salir',
@@ -192,7 +206,6 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
         if (problemResolved || problemResolvedId > 0) {
             Swal.fire({
                 title: '¿Quieres salir de este problema?',
-                text: 'Deberas ingresar los datos de nuevo.',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Sí, salir',
@@ -202,7 +215,6 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
                     setTimeout(() => {
                         showRows();
                     }, 0);
-
                 }
             });
         }
@@ -217,6 +229,7 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
         if (dificulty <= 8) return "#fb923c";   // Naranja
         return "#ef4444";                       // Rojo
     };
+
     return (
         <div className='w-full h-full'>
             <div className={`${module.ProblemsFilter} flex items-center justify-between bg-white shadow-sm rounded gap-4 mb-5`}>
@@ -229,7 +242,7 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
                         <input type="text" placeholder="Buscar solucion" className={`${module.SekeerInput} ${invalidSeekerValue ? "border-red-300" : "border-purple-500"}`} onInput={() => handleInputSekeer()} id="SekeerInput" />
 
                         <button
-                            className={`bg-white rounded-l border border-gray-300 p-4 hover:bg-gray-50 cursor-pointer h-full flex items-center justify-center`}
+                            className={`bg-white px-4 h-full flex items-center justify-center text-purple-500 hover:text-purple-700 transition`}
                             type='button'
                             onClick={(e) => {
                                 e.stopPropagation();
@@ -265,13 +278,9 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
                         return (
                             <div
                                 key={index}
-                                className={`relative flex flex-col shadow-sm rounded transition-all duration-300 ease-in-out h-[50vh] ProblemsGrid__ProblemParentNode ${isFocused ? module.problemFocused : module.problemNoFocus} `}
+                                className={`relative flex flex-col shadow-sm rounded ease-in-out h-[50vh] ProblemsGrid__ProblemParentNode ${isFocused ? module.problemFocused : module.problemNoFocus}  transition-all duration-300 ease-in-out `}
                                 onClick={(e) => {
-
                                     e.stopPropagation();
-
-
-
                                     if (problemResolvedId !== problem.id && problemResolved && problemResolvedId > 0) {
                                         unFocusInProblem(problem.id, problem.tagName);
                                         return;
@@ -284,55 +293,77 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
                                     <div className={`${module.ProblemContentContainer} transition-all duration-300 ease-in-out h-full 
                                             ${showSolution && idProblemResolved === problem.id ? "hidden" : "flex"}`
                                     }
-
                                         style={{
                                             width: problemResolvedId === problem.id && problemResolved ? "calc(100% - 25px)" : "100%",
                                         }}
-
                                     >
-                                        <div className={`${module.ProblemContentHeader} w-full flex flex-col md:flex-row justify-between items-start md:items-center gap-4 ${showSolution ? "hidden" : ""}`}>
+                                        <div className={`${module.ProblemContentHeader} w-full flex flex-row justify-between items-start md:items-center gap-4 mb-6 p-4 ${showSolution ? "hidden" : ""}`}>
                                             {/* Título + Tags + Descripción */}
                                             <div className="flex flex-col gap-1">
                                                 <div className="flex items-center flex-wrap gap-2">
-                                                    <h1 className="text-gray-800 text-2xl font-bold ProblemsGrid__ProblemTitle">
+                                                    <h1 className={`text-gray-800 text-2xl font-bold ProblemsGrid__ProblemTitle ${module.ProblemTitle}`}>
                                                         {problem.title}
                                                     </h1>
-
-                                                    {problem.tags && problem.tags.length > 0 && (
-                                                        <div className="flex flex-wrap gap-2">
-                                                            {problem.tags.map((tag, index) => (
-                                                                <span
-                                                                    key={index}
-                                                                    className="bg-purple-200 hover:bg-purple-300 text-gray-700 rounded-full px-3 py-1 text-xs font-semibold transition-all"
-                                                                >
-                                                                    {tag}
-                                                                </span>
-                                                            ))}
-                                                        </div>
-                                                    )}
+                                                    {
+                                                        !isMobile && (
+                                                            <>
+                                                                {problem.tags && problem.tags.length > 0 && (
+                                                                    <div className="flex flex-wrap gap-2">
+                                                                        {problem.tags.map((tag, index) => (
+                                                                            <span
+                                                                                key={index}
+                                                                                className={`bg-purple-200 hover:bg-purple-300 text-gray-700 rounded-full px-3 py-1 font-semibold transition-all ${module.ProblemTag}`}
+                                                                            >
+                                                                                {tag}
+                                                                            </span>
+                                                                        ))}
+                                                                    </div>
+                                                                )}
+                                                            </>
+                                                        )
+                                                    }
                                                 </div>
                                                 <p className="text-gray-500 text-sm ProblemsGrid__ProblemDescription">{problem.description}</p>
+
+                                                {
+                                                    isMobile && (
+                                                        <>
+                                                            {problem.tags && problem.tags.length > 0 && (
+                                                                <div className="flex flex-wrap gap-2">
+                                                                    {problem.tags.map((tag, index) => (
+                                                                        <span
+                                                                            key={index}
+                                                                            className={`bg-purple-200 hover:bg-purple-300 text-gray-700 rounded-full px-3 py-1 font-semibold transition-all ${module.ProblemTag}`}
+                                                                        >
+                                                                            {tag}
+                                                                        </span>
+                                                                    ))}
+                                                                </div>
+                                                            )}
+                                                        </>
+                                                    )
+                                                }
                                             </div>
 
-                                            {/* Barra de dificultad + Botón cerrar */}
                                             <div className="flex items-center gap-4 ml-auto">
-                                                {/* Puedes personalizar el texto según el valor */}
-                                                <div className="flex items-center gap-2 text-sm text-gray-600">
-                                                    <span className="font-medium">Dificultad:</span>
-                                                    <div className="w-32">
-                                                        <ProgressBar
-                                                            completed={problem.dificulty * 10}
-                                                            maxCompleted={100}
-                                                            bgColor={getColorByDificulty(problem.dificulty)}
-                                                            height="10px"
-                                                            baseBgColor="#e5e7eb" // Tailwind gray-200
-                                                            labelClassName="hidden" // Oculta el % si no lo querés
-                                                            isLabelVisible={false}
-                                                        />
-                                                    </div>
-
-                                                </div>
-
+                                                {
+                                                    !isMobile && (
+                                                        <div className="flex items-center gap-2 text-sm text-gray-600">
+                                                            <span className="font-bold">Dificultad:</span>
+                                                            <div className="w-32">
+                                                                <ProgressBar
+                                                                    completed={problem.dificulty * 10}
+                                                                    maxCompleted={100}
+                                                                    bgColor={getColorByDificulty(problem.dificulty)}
+                                                                    height="10px"
+                                                                    baseBgColor="#e5e7eb" // Tailwind gray-200
+                                                                    labelClassName="hidden" // Oculta el % si no lo querés
+                                                                    isLabelVisible={false}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    )
+                                                }
                                                 {isFocused && (
                                                     <button
                                                         onClick={(e) => {
@@ -355,14 +386,14 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
                                                             setFocusedProblemId(null);
                                                             setProblemResolved(false);
                                                         }}
-                                                        className="p-2 hover:bg-red-100 rounded-full transition-all"
+                                                        className="p-2 bg-red-100 hover:bg-red-200 hover:border-red-400 rounded-full transition-all"
                                                     >
                                                         <FaX className="text-red-400 hover:text-red-600 text-lg" />
                                                     </button>
                                                 )}
                                             </div>
                                         </div>
-                                        <div className={`${module.ProblemsNodesParentContainer}`}>
+                                        <div className={`${module.ProblemsNodesParentContainer} p-1`}>
                                             <div className={`${module.ProblemsNodeContainer}`}>{problem.form}</div>
                                             <div className={`${module.ProblemsNodeContainer}`}>{problem.graphNode}</div>
                                         </div>

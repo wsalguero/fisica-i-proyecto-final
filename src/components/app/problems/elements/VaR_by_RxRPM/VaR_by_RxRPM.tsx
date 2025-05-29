@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
-
-
+import { FaCalculator, FaCheck } from 'react-icons/fa';
 
 // PROBLEM ID: 1
 const VaR_by_RxRPM = () => {
@@ -12,6 +11,7 @@ const VaR_by_RxRPM = () => {
 VaR_by_RxRPM.Form = () => {
     const [vA, setVA] = React.useState<string>("");
     const [prevRPM, setPrevRPM] = React.useState<number | null>(null);
+    const [prevR, setPrevR] = React.useState<number | null>(null);
     const [formKey, setFormKey] = React.useState(0);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -19,6 +19,7 @@ VaR_by_RxRPM.Form = () => {
         const form = new FormData(e.currentTarget);
         const rpm = parseFloat(form.get("rpm") as string);
         setPrevRPM(rpm);
+        setPrevR(parseFloat(form.get("radio") as string));
 
         const frecuencia = rpm / 60;
         const velocidadAngular = 2 * Math.PI * frecuencia;
@@ -27,37 +28,83 @@ VaR_by_RxRPM.Form = () => {
         localStorage.setItem("resolved_problem_ID", "1");
 
         setVA(velocidadAngular.toFixed(2) + " rad/s");
-
         window.dispatchEvent(new Event("update:VaR_by_RxRPM__velocidadAngular"));
         window.dispatchEvent(new Event("problem:resolved"));
-
         setFormKey(prev => prev + 1);
     };
 
     return (
-        <form key={formKey} className="flex flex-col gap-4 bg-white p-6 border border-gray-200 shadow-md rounded-md w-full" onSubmit={handleSubmit}>
-            <h2 className="text-xl font-semibold text-blue-600">Ingresar datos</h2>
+        <form key={formKey} className="flex flex-col w-full md:px-4" onSubmit={handleSubmit}>
+            {/* FORMULARIO */}
+            <div className="bg-[#f3f4f6] border border-purple-200 rounded-xl p-6 shadow-md mb-4">
+                <div className="flex flex-col md:flex-row gap-6">
+                    <div className="flex flex-col flex-1">
+                        <label htmlFor="radio" className="text-sm font-semibold text-blue-800 mb-1">
+                            Radio (m):
+                        </label>
+                        <input
+                            type="number"
+                            id="radio"
+                            name="radio"
+                            step="any"
+                            placeholder="Ej: 0.5"
+                            className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                            required
+                        />
+                    </div>
+                    <div className="flex flex-col flex-1">
+                        <label htmlFor="rpm" className="text-sm font-semibold text-blue-800 mb-1">
+                            RPM:
+                        </label>
+                        <input
+                            type="number"
+                            id="rpm"
+                            name="rpm"
+                            placeholder="Ej: 180"
+                            className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                            required
+                        />
+                    </div>
+                </div>
 
-            <div className="flex flex-col">
-                <label htmlFor="radio" className="text-sm font-medium text-gray-700 mb-1">Radio (m):</label>
-                <input type="number" id="radio" name="radio" step="any" placeholder="Ej: 0.5" className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" required />
+                <div className="w-full flex justify-end">
+                    <button
+                        type="submit"
+                        className="mt-6 bg-[#2563eb] hover:bg-[#1e40af] transition-colors text-white font-semibold px-6 py-2 rounded-md shadow"
+                    >
+                        Calcular
+                    </button>
+                </div>
             </div>
 
-            <div className="flex flex-col">
-                <label htmlFor="rpm" className="text-sm font-medium text-gray-700 mb-1">RPM:</label>
-                <input type="number" id="rpm" name="rpm" placeholder="Ej: 180" className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" required />
+            {/* RESULTADOS */}
+            <div className="flex flex-col md:flex-row gap-4 mt-2">
+                {prevRPM !== null && (
+                    <div className="bg-white border border-blue-300 rounded-xl shadow-sm p-5 w-full md:w-1/2 transition hover:shadow-md">
+                        <h3 className="flex items-center gap-2 text-blue-700 font-bold text-lg">
+                            <FaCalculator className="text-blue-500" /> Datos ingresados
+                        </h3>
+
+                        <ul className="mt-2 text-sm text-gray-700 space-y-1">
+                            <li><span className="font-medium">RPM:</span> {prevRPM} rpm</li>
+                            <li><span className="font-medium">Radio:</span> {prevR} m</li>
+                        </ul>
+                    </div>
+                )}
+
+                {vA && (
+                    <div className="bg-white border border-green-300 rounded-xl shadow-sm p-5 w-full md:w-1/2 transition hover:shadow-md">
+                        <h3 className="text-lg font-bold text-green-700 flex items-center gap-2">
+                            <FaCheck className="text-blue-500" /> Resultado
+                        </h3>
+                        <p className="text-sm text-gray-700 mt-2">
+                            Resultado preliminar: <strong className="text-blue-600">{vA}</strong>
+                        </p>
+                    </div>
+                )}
             </div>
-
-            <button type="submit" className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors">Calcular</button>
-
-            {prevRPM !== null && (
-                <p className="text-sm text-gray-500 mt-2">Último valor ingresado: <strong>{prevRPM} rpm</strong></p>
-            )}
-
-            {vA && (
-                <p className="text-sm text-gray-500 mt-1">Resultado preliminar: <strong className="text-blue-600">{vA}</strong></p>
-            )}
         </form>
+
     );
 };
 
