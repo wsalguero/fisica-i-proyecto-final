@@ -1,4 +1,5 @@
 import { FormEvent, useEffect, useState } from "react";
+import module from '../problems.module.css';
 
 // PROBLEM ID: 6
 const WA_by_RPM = () => <></>;
@@ -29,26 +30,53 @@ WA_by_RPM.Form = () => {
     };
 
     return (
-        <form key={formKey} onSubmit={handleSubmit} className="flex flex-col gap-4 bg-white p-6 border border-gray-200 rounded-md shadow-md max-w-md mx-auto">
-            <h2 className="text-xl font-semibold text-blue-600">Calcular Velocidad Angular (ω)</h2>
+        <form key={formKey} onSubmit={handleSubmit} className={`${module.Form}`}>
+            <div className={`bg-[#f3f4f6] border border-purple-200 rounded-xl p-6 shadow-md mb-4 ${module.FormContainer}`}>
+                <h2 className="text-xl font-semibold text-blue-600 mb-4">Calcular Velocidad Angular (ω)</h2>
 
-            <div className="flex flex-col">
-                <label htmlFor="rpm" className="text-sm font-medium text-gray-700 mb-1">RPM:</label>
-                <input type="number" id="rpm" name="rpm" step="any" placeholder="Ej: 120" required className="p-2 border border-gray-300 rounded" />
+                <div className={module.inputsRow}>
+                    <div className={`${module.inputGroup} flex flex-col`}>
+                        <label htmlFor="rpm" className="text-sm font-medium text-gray-700 mb-1">RPM:</label>
+                        <input
+                            type="number"
+                            id="rpm"
+                            name="rpm"
+                            step="any"
+                            placeholder="Ej: 120"
+                            required
+                            className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+                        />
+                    </div>
+                </div>
+
+                <div className="w-full flex justify-end">
+                    <button type="submit" className="mt-6 bg-[#2563eb] hover:bg-[#1e40af] transition-colors text-white font-semibold px-6 py-2 rounded-md shadow">
+                        Calcular
+                    </button>
+                </div>
             </div>
 
-            <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Calcular</button>
+            <div className={`${module.ResultsContainer}`}>
+                {prevRPM !== null && (
+                    <div className="bg-white border border-blue-300 rounded-xl shadow-sm p-5 w-full transition hover:shadow-md">
+                        <h3 className="text-blue-700 font-bold text-lg mb-1">Dato ingresado</h3>
+                        <p className="text-sm text-gray-700">
+                            <strong>RPM:</strong> {prevRPM}
+                        </p>
+                    </div>
+                )}
 
-            {prevRPM !== null && (
-                <p className="text-sm text-gray-500 mt-2">
-                    Último valor ingresado: <strong>{prevRPM} rpm</strong>
-                </p>
-            )}
-
-            {omega && (
-                <p className="text-sm text-gray-500">Resultado preliminar: <strong className="text-blue-600">{omega}</strong></p>
-            )}
+                {omega && (
+                    <div className="bg-white border border-green-300 rounded-xl shadow-sm p-5 w-full transition hover:shadow-md mt-2">
+                        <h3 className="text-green-700 font-bold text-lg mb-1">Resultado</h3>
+                        <p className="text-sm text-gray-700">
+                            Resultado preliminar: <strong className="text-blue-600">{omega}</strong>
+                        </p>
+                    </div>
+                )}
+            </div>
         </form>
+
     );
 };
 

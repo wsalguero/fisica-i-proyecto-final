@@ -151,7 +151,7 @@ const Resolve = () => {
 
 
     return (
-        <div className="w-full h-full">
+        <div className="w-full h-full lg:px-12 lg:pxy-6 px-4 py-6 space-y-6">
             <ProblemsGrid problems={problems} pageSize={10} idProblemResolved={idProblemResolved} />
         </div>
     )

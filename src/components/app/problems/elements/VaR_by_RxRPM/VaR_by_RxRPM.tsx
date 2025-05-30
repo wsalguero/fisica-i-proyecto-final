@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
-import { FaCalculator, FaCheck } from 'react-icons/fa';
-
+import module from '../problems.module.css';
 // PROBLEM ID: 1
 const VaR_by_RxRPM = () => {
     return (
@@ -34,11 +33,11 @@ VaR_by_RxRPM.Form = () => {
     };
 
     return (
-        <form key={formKey} className="flex flex-col w-full md:px-4" onSubmit={handleSubmit}>
+        <form key={formKey} className={`${module.Form}`} onSubmit={handleSubmit}>
             {/* FORMULARIO */}
-            <div className="bg-[#f3f4f6] border border-purple-200 rounded-xl p-6 shadow-md mb-4">
-                <div className="flex flex-col md:flex-row gap-6">
-                    <div className="flex flex-col flex-1">
+            <div className={`bg-[#f3f4f6] border border-purple-200 rounded-xl p-6 shadow-md mb-4 ${module.FormContainer}`}>
+                <div className={module.inputsRow}>
+                    <div className={`${module.inputGroup} flex flex-col`}>
                         <label htmlFor="radio" className="text-sm font-semibold text-blue-800 mb-1">
                             Radio (m):
                         </label>
@@ -52,7 +51,7 @@ VaR_by_RxRPM.Form = () => {
                             required
                         />
                     </div>
-                    <div className="flex flex-col flex-1">
+                    <div className={`${module.inputGroup} flex flex-col`}>
                         <label htmlFor="rpm" className="text-sm font-semibold text-blue-800 mb-1">
                             RPM:
                         </label>
@@ -76,13 +75,12 @@ VaR_by_RxRPM.Form = () => {
                     </button>
                 </div>
             </div>
-
             {/* RESULTADOS */}
-            <div className="flex flex-col md:flex-row gap-4 mt-2">
+            <div className={`${module.ResultsContainer}`}>
                 {prevRPM !== null && (
-                    <div className="bg-white border border-blue-300 rounded-xl shadow-sm p-5 w-full md:w-1/2 transition hover:shadow-md">
+                    <div className="bg-white border border-blue-300 rounded-xl shadow-sm p-5 w-full transition hover:shadow-md">
                         <h3 className="flex items-center gap-2 text-blue-700 font-bold text-lg">
-                            <FaCalculator className="text-blue-500" /> Datos ingresados
+                            Datos ingresados
                         </h3>
 
                         <ul className="mt-2 text-sm text-gray-700 space-y-1">
@@ -93,18 +91,17 @@ VaR_by_RxRPM.Form = () => {
                 )}
 
                 {vA && (
-                    <div className="bg-white border border-green-300 rounded-xl shadow-sm p-5 w-full md:w-1/2 transition hover:shadow-md">
+                    <div className="bg-white border border-green-300 rounded-xl shadow-sm p-5 w-full transition hover:shadow-md">
                         <h3 className="text-lg font-bold text-green-700 flex items-center gap-2">
-                            <FaCheck className="text-blue-500" /> Resultado
+                            Resultado
                         </h3>
                         <p className="text-sm text-gray-700 mt-2">
-                            Resultado preliminar: <strong className="text-blue-600">{vA}</strong>
+                            Resultado: <strong className="text-blue-600">{vA}</strong>
                         </p>
                     </div>
                 )}
             </div>
         </form>
-
     );
 };
 

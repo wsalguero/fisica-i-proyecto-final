@@ -1,4 +1,5 @@
 import { FormEvent, useEffect, useState } from 'react';
+import module from '../problems.module.css';
 
 // PROBLEM ID: 3
 const VL_by_RxRPM = () => <></>;
@@ -33,35 +34,65 @@ VL_by_RxRPM.Form = () => {
     };
 
     return (
-        <form key={formKey} className="flex flex-col gap-4 bg-white p-6 border border-gray-200 shadow-md rounded-md w-full max-w-md mx-auto" onSubmit={handleSubmit}>
-            <h2 className="text-xl font-semibold text-blue-600">Calcular Velocidad Lineal (v)</h2>
+        <form key={formKey} className={`${module.Form}`} onSubmit={handleSubmit}>
+            <div className={`bg-[#f3f4f6] border border-purple-200 rounded-xl p-6 shadow-md mb-4 ${module.FormContainer}`}>
+                <h2 className="text-xl font-semibold text-blue-600 mb-4">Calcular Velocidad Lineal (v)</h2>
 
-            <div className="flex flex-col">
-                <label htmlFor="radio" className="text-sm font-medium text-gray-700 mb-1">Radio (m):</label>
-                <input type="number" id="radio" name="radio" step="any" placeholder="Ej: 0.5" className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" required />
-            </div>
-
-            <div className="flex flex-col">
-                <label htmlFor="rpm" className="text-sm font-medium text-gray-700 mb-1">RPM:</label>
-                <input type="number" id="rpm" name="rpm" placeholder="Ej: 180" className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" required />
-            </div>
-
-            <button type="submit" className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors">Calcular</button>
-
-            {prevInputs && (
-                <div className="text-sm text-gray-500 mt-2">
-                    Últimos valores ingresados: <br />
-                    <strong>Radio:</strong> {prevInputs.radio} m &nbsp;&nbsp;
-                    <strong>RPM:</strong> {prevInputs.rpm}
+                <div className={`${module.inputsRow}`}>
+                    <div className={`${module.inputGroup} flex flex-col`}>
+                        <label htmlFor="radio" className="text-sm font-medium text-gray-700 mb-1">Radio (m):</label>
+                        <input
+                            type="number"
+                            id="radio"
+                            name="radio"
+                            step="any"
+                            placeholder="Ej: 0.5"
+                            className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+                            required
+                        />
+                    </div>
+                    <div className={`${module.inputGroup} flex flex-col`}>
+                        <label htmlFor="rpm" className="text-sm font-medium text-gray-700 mb-1">RPM:</label>
+                        <input
+                            type="number"
+                            id="rpm"
+                            name="rpm"
+                            placeholder="Ej: 180"
+                            className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+                            required
+                        />
+                    </div>
                 </div>
-            )}
 
-            {vL && (
-                <p className="text-sm text-gray-500 mt-1">
-                    Resultado preliminar: <strong className="text-blue-600">{vL}</strong>
-                </p>
-            )}
+                <div className="w-full flex justify-end">
+                    <button type="submit" className="mt-6 bg-[#2563eb] hover:bg-[#1e40af] transition-colors text-white font-semibold px-6 py-2 rounded-md shadow">
+                        Calcular
+                    </button>
+                </div>
+            </div>
+
+            <div className={`${module.ResultsContainer}`}>
+                {prevInputs && (
+                    <div className="bg-white border border-blue-300 rounded-xl shadow-sm p-5 w-full transition hover:shadow-md">
+                        <h3 className="text-blue-700 font-bold text-lg mb-1">Datos ingresados</h3>
+                        <p className="text-sm text-gray-700">
+                            <strong>Radio:</strong> {prevInputs.radio} m &nbsp;&nbsp;
+                            <strong>RPM:</strong> {prevInputs.rpm}
+                        </p>
+                    </div>
+                )}
+
+                {vL && (
+                    <div className="bg-white border border-green-300 rounded-xl shadow-sm p-5 w-full transition hover:shadow-md mt-2">
+                        <h3 className="text-green-700 font-bold text-lg mb-1">Resultado</h3>
+                        <p className="text-sm text-gray-700">
+                            Resultado preliminar: <strong className="text-blue-600">{vL}</strong>
+                        </p>
+                    </div>
+                )}
+            </div>
         </form>
+
     );
 };
 

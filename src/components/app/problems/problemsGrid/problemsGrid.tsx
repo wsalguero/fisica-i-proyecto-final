@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from 'react'
 import module from './problemsGrid.module.css'
-import { FaChevronLeft, FaSearch, FaSearchMinus } from 'react-icons/fa'
+import { FaChevronCircleDown, FaChevronLeft, FaSearch, FaSearchMinus } from 'react-icons/fa'
 import ProgressBar from '@ramonak/react-progress-bar'
 import { FaX } from 'react-icons/fa6'
 import Swal from 'sweetalert2'
@@ -38,6 +38,7 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
     const [problemResolvedId, setProblemResolvedId] = useState<number>(0);
     const [clearSearch, setClearSearch] = useState(false);
     const [invalidSeekerValue, setInvalidSeekerValue] = useState(false);
+    const [mobileShowTags, setMobileShowTags] = useState(false);
 
     useEffect(() => {
         const sekeer = document.getElementById("SekeerInput") as HTMLInputElement;
@@ -232,9 +233,9 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
 
     return (
         <div className='w-full h-full'>
-            <div className={`${module.ProblemsFilter} flex items-center justify-between bg-white shadow-sm rounded gap-4 mb-5`}>
-                <div className="h-full p-4">
-                    <h1 className={`text-2xl font-bold`}>Simulador de problemas</h1>
+            <div className={`${module.ProblemsFilter} flex items-center justify-between bg-white shadow-sm rounded lg:gap-4 mb-5`}>
+                <div className="h-full lg:p-4 p-2">
+                    <h1 className={`lg:text-2xl text-[1.3rem] font-bold`}>Simulador de problemas</h1>
                 </div>
 
                 <div className={`h-full flex rounded shadow-sm justify-end ${module.SekeerContainer}`} id="ProblemsSeeker">
@@ -264,7 +265,7 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
 
             <section id='ProblemsGrid' className={`w-full ${module.ProblemsGrid}`}>
 
-                <div className={`flex flex-col gap-5`}>
+                <div className={`flex flex-col gap-5 align-items-center justify-center ${module.ProblemsGridContainer}`}>
                     {problems.map((problem, index) => {
                         const isFocused = focusedProblemId === problem.id;
                         useEffect(() => {
@@ -278,7 +279,7 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
                         return (
                             <div
                                 key={index}
-                                className={`relative flex flex-col shadow-sm rounded ease-in-out h-[50vh] ProblemsGrid__ProblemParentNode ${isFocused ? module.problemFocused : module.problemNoFocus}  transition-all duration-300 ease-in-out `}
+                                className={`relative flex flex-col shadow-sm rounded ease-in-out h-auto ProblemsGrid__ProblemParentNode ${isFocused ? module.problemFocused : module.problemNoFocus} ${module.ProblemMainNode}  transition-all duration-300 ease-in-out `}
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     if (problemResolvedId !== problem.id && problemResolved && problemResolvedId > 0) {
@@ -294,16 +295,46 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
                                             ${showSolution && idProblemResolved === problem.id ? "hidden" : "flex"}`
                                     }
                                         style={{
-                                            width: problemResolvedId === problem.id && problemResolved ? "calc(100% - 25px)" : "100%",
+                                            width: problemResolvedId === problem.id && problemResolved && !isMobile ? "calc(100% - 25px)" : "100%",
                                         }}
                                     >
-                                        <div className={`${module.ProblemContentHeader} w-full flex flex-row justify-between items-start md:items-center gap-4 mb-6 p-4 ${showSolution ? "hidden" : ""}`}>
+                                        <div className={`${module.ProblemContentHeader} w-full ${showSolution ? "hidden" : ""}`}>
                                             {/* Título + Tags + Descripción */}
-                                            <div className="flex flex-col gap-1">
-                                                <div className="flex items-center flex-wrap gap-2">
-                                                    <h1 className={`text-gray-800 text-2xl font-bold ProblemsGrid__ProblemTitle ${module.ProblemTitle}`}>
-                                                        {problem.title}
-                                                    </h1>
+                                            <div className="flex flex-col gap-1 w-full">
+                                                <div className="flex items-center flex-wrap gap-2 w-full">
+                                                    <div className={`${isMobile ? "flex intems-center justify-between w-full px-1 items-center" : ""}`}>
+                                                        <h1 className={`text-gray-800  font-bold ProblemsGrid__ProblemTitle ${module.ProblemTitle}`}>
+                                                            {problem.title}
+                                                        </h1>
+
+                                                        {isFocused && isMobile ?
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+
+                                                                    if (problemResolvedId === problem.id && problemResolved && problemResolvedId > 0) {
+                                                                        unFocusInProblem(problem.id, problem.tagName);
+                                                                        return;
+                                                                    } else {
+                                                                        const inputsByProblem = document.querySelectorAll(`input[data-tagname="${problem.tagName}"]`);
+
+                                                                        inputsByProblem.forEach((input) => {
+                                                                            if (input instanceof HTMLInputElement) {
+                                                                                input.value = "";
+                                                                            }
+                                                                        });
+                                                                        localStorage.clear();
+
+                                                                    }
+                                                                    setFocusedProblemId(null);
+                                                                    setProblemResolved(false);
+                                                                }}
+                                                                className="p-2 bg-red-100 hover:bg-red-200 hover:border-red-400 rounded-full transition-al flex items-center justify-center"
+                                                            >
+                                                                <FaX className="text-red-400 hover:text-red-600 text-sm" />
+                                                            </button>
+                                                            : null}
+                                                    </div>
                                                     {
                                                         !isMobile && (
                                                             <>
@@ -323,26 +354,65 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
                                                         )
                                                     }
                                                 </div>
-                                                <p className="text-gray-500 text-sm ProblemsGrid__ProblemDescription">{problem.description}</p>
+                                                <p className="text-gray-500 text-sm ProblemsGrid__ProblemDescription px-1 mt-2 lg:mt-0 lg:px-0">{problem.description}</p>
 
-                                                {
-                                                    isMobile && (
-                                                        <>
-                                                            {problem.tags && problem.tags.length > 0 && (
-                                                                <div className="flex flex-wrap gap-2">
-                                                                    {problem.tags.map((tag, index) => (
-                                                                        <span
-                                                                            key={index}
-                                                                            className={`bg-purple-200 hover:bg-purple-300 text-gray-700 rounded-full px-3 py-1 font-semibold transition-all ${module.ProblemTag}`}
-                                                                        >
-                                                                            {tag}
-                                                                        </span>
-                                                                    ))}
-                                                                </div>
-                                                            )}
-                                                        </>
-                                                    )
-                                                }
+                                                <div className='flex w-full items-start justify-between mt-2 px-1 lg:px-0 gap-2'>
+                                                    {
+                                                        isMobile && (
+                                                            <>
+                                                                {problem.tags && problem.tags.length > 0 && (
+
+                                                                    <div className='w-1/2'>
+
+                                                                        <div className='w-full flex items-center mb-2'>
+                                                                            <button
+                                                                                onClick={(e) => {
+                                                                                    e.stopPropagation();
+                                                                                    setMobileShowTags(!mobileShowTags);
+                                                                                }}
+                                                                                className="flex justify-between items-center rounded-md shadow-sm text-purple-500 hover:text-purple-700 transition-all w-full p-2 h-[3rem] bg-white border border-purple-200 hover:border-purple-300"
+                                                                            >
+                                                                                Ver Tags
+                                                                                <FaChevronCircleDown className={`transition-transform duration-300 ease-in-out ${mobileShowTags && focusedProblemId === problem.id ? 'rotate-180' : ''}`} />
+                                                                            </button>
+                                                                        </div>
+                                                                        <div className={`
+                                                                            flex flex-wrap gap-2 transition-all duration-300 ease-in-out 
+                                                                            ${mobileShowTags && focusedProblemId === problem.id ? 'max-h-40 ' : 'max-h-0 overflow-hidden'}`
+                                                                        }>
+                                                                            {problem.tags.map((tag, index) => (
+                                                                                <span
+                                                                                    key={index}
+                                                                                    className={`bg-purple-200 hover:bg-purple-300 text-gray-700 rounded-full px-3 py-1 font-semibold transition-all ${module.ProblemTag}`}
+                                                                                >
+                                                                                    {tag}
+                                                                                </span>
+                                                                            ))}
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                            </>
+                                                        )
+                                                    }
+                                                    {
+                                                        isMobile && problemResolvedId === problem.id && (
+                                                            <div className='w-1/2 h-full flex items-center justify-end'>
+
+                                                                <button
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        setShowSolution(!showSolution);
+                                                                    }}
+                                                                    className={`${module.ViewSolutionButton} h-[3rem] p-2 cursor-pointer bg-white transition-all duration-300 ease-in-out  text-center
+                                                                            ${showSolution ? module.ButtonSolutionOpen : module.ButtonSolutionClose}`}
+                                                                >
+                                                                    <FaChevronCircleDown className={`transition-transform duration-300 ease-in-out ${showSolution ? 'rotate-180' : ''}`} />
+                                                                    Ver Solución
+                                                                </button>
+                                                            </div>
+                                                        )
+                                                    }
+                                                </div>
                                             </div>
 
                                             <div className="flex items-center gap-4 ml-auto">
@@ -364,7 +434,7 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
                                                         </div>
                                                     )
                                                 }
-                                                {isFocused && (
+                                                {isFocused && !isMobile ?
                                                     <button
                                                         onClick={(e) => {
                                                             e.stopPropagation();
@@ -390,10 +460,10 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
                                                     >
                                                         <FaX className="text-red-400 hover:text-red-600 text-lg" />
                                                     </button>
-                                                )}
+                                                    : null}
                                             </div>
                                         </div>
-                                        <div className={`${module.ProblemsNodesParentContainer} p-1`}>
+                                        <div className={`${module.ProblemsNodesParentContainer} px-1`}>
                                             <div className={`${module.ProblemsNodeContainer}`}>{problem.form}</div>
                                             <div className={`${module.ProblemsNodeContainer}`}>{problem.graphNode}</div>
                                         </div>
@@ -405,16 +475,20 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
                                             problemResolvedId === problem.id && (
                                                 <>
                                                     <div className={`flex`}>
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                setShowSolution(!showSolution);
-                                                            }}
-                                                            className={`${module.ViewSolutionButton} w-[25px] h-full p-2 cursor-pointer bg-white transition-all duration-300 ease-in-out  text-center
-                                                                    ${showSolution ? module.ButtonSolutionOpen : module.ButtonSolutionClose}`}
-                                                        >
-                                                            <FaChevronLeft className={`transition-transform duration-300 ease-in-out ${showSolution ? 'rotate-180' : ''}`} />
-                                                        </button>
+                                                        {
+                                                            !isMobile && (
+                                                                <button
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        setShowSolution(!showSolution);
+                                                                    }}
+                                                                    className={`${module.ViewSolutionButton} w-[25px] h-full p-2 cursor-pointer bg-white transition-all duration-300 ease-in-out  text-center
+                                                                            ${showSolution ? module.ButtonSolutionOpen : module.ButtonSolutionClose}`}
+                                                                >
+                                                                    <FaChevronLeft className={`transition-transform duration-300 ease-in-out ${showSolution ? 'rotate-180' : ''}`} />
+                                                                </button>
+                                                            )
+                                                        }
 
                                                     </div>
                                                     {(showSolution && idProblemResolved === problem.id) ? (
@@ -434,9 +508,6 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
                                                         </div>
                                                     ) : null}
                                                 </>
-
-
-
                                             )
                                         }
                                     </div>

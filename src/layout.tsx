@@ -5,10 +5,10 @@ const Layout = () => {
     return (
         <>
 
-            <header className="w-full mb-4 md:mb-8 lg:mb-12 bg-white shadow-md rounded-sm">
+            <header className="w-full bg-white shadow-md rounded-sm">
                 <TopMenu />
             </header>
-            <main className="w-full h-full lg:px-24">
+            <main className="w-full h-full">
                 <Outlet />
             </main>
 

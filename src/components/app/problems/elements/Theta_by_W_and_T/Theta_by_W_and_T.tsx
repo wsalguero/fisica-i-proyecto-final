@@ -1,4 +1,5 @@
 import { FormEvent, useEffect, useState } from "react";
+import module from '../problems.module.css';
 
 // PROBLEM ID: 9
 const Theta_by_W_and_T = () => <></>;
@@ -31,31 +32,66 @@ Theta_by_W_and_T.Form = () => {
     };
 
     return (
-        <form key={formKey} onSubmit={handleSubmit} className="flex flex-col gap-4 bg-white p-6 border border-gray-200 rounded-md shadow-md max-w-md mx-auto">
-            <h2 className="text-xl font-semibold text-blue-600">Ángulo recorrido (θ) por ω y t</h2>
+        <form key={formKey} onSubmit={handleSubmit} className={`${module.Form}`}>
+            <div className={`bg-[#f3f4f6] border border-purple-200 rounded-xl p-6 shadow-md mb-4 ${module.FormContainer}`}>
+                <h2 className="text-xl font-semibold text-blue-600 mb-4">Ángulo recorrido (θ) por ω y t</h2>
 
-            <div className="flex flex-col">
-                <label htmlFor="w" className="text-sm font-medium text-gray-700 mb-1">Velocidad angular ω (rad/día):</label>
-                <input type="number" id="w" name="w" step="any" placeholder="Ej: 0.0172" required className="p-2 border border-gray-300 rounded" />
-            </div>
+                <div className={module.inputsRow}>
+                    <div className={`${module.inputGroup} flex flex-col`}>
+                        <label htmlFor="w" className="text-sm font-medium text-gray-700 mb-1">Velocidad angular ω (rad/día):</label>
+                        <input
+                            type="number"
+                            id="w"
+                            name="w"
+                            step="any"
+                            placeholder="Ej: 0.0172"
+                            required
+                            className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+                        />
+                    </div>
 
-            <div className="flex flex-col">
-                <label htmlFor="t" className="text-sm font-medium text-gray-700 mb-1">Tiempo t (días):</label>
-                <input type="number" id="t" name="t" step="any" placeholder="Ej: 30" required className="p-2 border border-gray-300 rounded" />
-            </div>
-
-            <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Calcular</button>
-
-            {prevInputs && (
-                <div className="text-sm text-gray-500 mt-2">
-                    ω: {prevInputs.w} rad/día &nbsp;&nbsp; t: {prevInputs.t} días
+                    <div className={`${module.inputGroup} flex flex-col`}>
+                        <label htmlFor="t" className="text-sm font-medium text-gray-700 mb-1">Tiempo t (días):</label>
+                        <input
+                            type="number"
+                            id="t"
+                            name="t"
+                            step="any"
+                            placeholder="Ej: 30"
+                            required
+                            className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+                        />
+                    </div>
                 </div>
-            )}
 
-            {theta && (
-                <p className="text-sm text-gray-500">Resultado preliminar: <strong className="text-blue-600">{theta}</strong></p>
-            )}
+                <div className="w-full flex justify-end">
+                    <button type="submit" className="mt-6 bg-[#2563eb] hover:bg-[#1e40af] transition-colors text-white font-semibold px-6 py-2 rounded-md shadow">
+                        Calcular
+                    </button>
+                </div>
+            </div>
+
+            <div className={`${module.ResultsContainer}`}>
+                {prevInputs && (
+                    <div className="bg-white border border-blue-300 rounded-xl shadow-sm p-5 w-full transition hover:shadow-md">
+                        <h3 className="text-blue-700 font-bold text-lg mb-1">Datos ingresados</h3>
+                        <p className="text-sm text-gray-700">
+                            ω: {prevInputs.w} rad/día &nbsp;&nbsp; t: {prevInputs.t} días
+                        </p>
+                    </div>
+                )}
+
+                {theta && (
+                    <div className="bg-white border border-green-300 rounded-xl shadow-sm p-5 w-full transition hover:shadow-md mt-2">
+                        <h3 className="text-green-700 font-bold text-lg mb-1">Resultado</h3>
+                        <p className="text-sm text-gray-700">
+                            Resultado preliminar: <strong className="text-blue-600">{theta}</strong>
+                        </p>
+                    </div>
+                )}
+            </div>
         </form>
+
     );
 };
 

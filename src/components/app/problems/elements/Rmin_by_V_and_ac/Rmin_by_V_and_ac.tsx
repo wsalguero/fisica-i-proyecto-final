@@ -1,4 +1,5 @@
 import { FormEvent, useEffect, useState } from "react";
+import module from '../problems.module.css';
 
 // PROBLEM ID: 8
 const Rmin_by_V_and_ac = () => <></>;
@@ -35,32 +36,66 @@ Rmin_by_V_and_ac.Form = () => {
     };
 
     return (
-        <form key={formKey} onSubmit={handleSubmit} className="flex flex-col gap-4 bg-white p-6 border border-gray-200 rounded-md shadow-md max-w-md mx-auto">
-            <h2 className="text-xl font-semibold text-blue-600">Radio mínimo por velocidad y aceleración soportada</h2>
+        <form key={formKey} onSubmit={handleSubmit} className={`${module.Form}`}>
+            <div className={`bg-[#f3f4f6] border border-purple-200 rounded-xl p-6 shadow-md mb-4 ${module.FormContainer}`}>
+                <h2 className="text-xl font-semibold text-blue-600 mb-4">Radio mínimo por velocidad y aceleración soportada</h2>
 
-            <div className="flex flex-col">
-                <label htmlFor="v" className="text-sm font-medium text-gray-700 mb-1">Velocidad (km/h):</label>
-                <input type="number" id="v" name="v" step="any" placeholder="Ej: 2300" required className="p-2 border border-gray-300 rounded" />
-            </div>
+                <div className={module.inputsRow}>
+                    <div className={`${module.inputGroup} flex flex-col`}>
+                        <label htmlFor="v" className="text-sm font-medium text-gray-700 mb-1">Velocidad (km/h):</label>
+                        <input
+                            type="number"
+                            id="v"
+                            name="v"
+                            step="any"
+                            placeholder="Ej: 2300"
+                            required
+                            className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+                        />
+                    </div>
 
-            <div className="flex flex-col">
-                <label htmlFor="g" className="text-sm font-medium text-gray-700 mb-1">Valor de g (m/s²):</label>
-                <input type="number" id="g" name="g" step="any" placeholder="Ej: 9.81" required className="p-2 border border-gray-300 rounded" />
-            </div>
-
-            <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Calcular</button>
-
-            {prevInputs && (
-                <div className="text-sm text-gray-500 mt-2">
-                    Últimos valores ingresados: <br />
-                    Velocidad: {prevInputs.v} km/h &nbsp;&nbsp; g: {prevInputs.g} m/s²
+                    <div className={`${module.inputGroup} flex flex-col`}>
+                        <label htmlFor="g" className="text-sm font-medium text-gray-700 mb-1">Valor de g (m/s²):</label>
+                        <input
+                            type="number"
+                            id="g"
+                            name="g"
+                            step="any"
+                            placeholder="Ej: 9.81"
+                            required
+                            className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+                        />
+                    </div>
                 </div>
-            )}
 
-            {r && (
-                <p className="text-sm text-gray-500">Resultado preliminar: <strong className="text-blue-600">{r}</strong></p>
-            )}
+                <div className="w-full flex justify-end">
+                    <button type="submit" className="mt-6 bg-[#2563eb] hover:bg-[#1e40af] transition-colors text-white font-semibold px-6 py-2 rounded-md shadow">
+                        Calcular
+                    </button>
+                </div>
+            </div>
+
+            <div className={`${module.ResultsContainer}`}>
+                {prevInputs && (
+                    <div className="bg-white border border-blue-300 rounded-xl shadow-sm p-5 w-full transition hover:shadow-md">
+                        <h3 className="text-blue-700 font-bold text-lg mb-1">Datos ingresados</h3>
+                        <p className="text-sm text-gray-700">
+                            Velocidad: {prevInputs.v} km/h &nbsp;&nbsp; g: {prevInputs.g} m/s²
+                        </p>
+                    </div>
+                )}
+
+                {r && (
+                    <div className="bg-white border border-green-300 rounded-xl shadow-sm p-5 w-full transition hover:shadow-md mt-2">
+                        <h3 className="text-green-700 font-bold text-lg mb-1">Resultado</h3>
+                        <p className="text-sm text-gray-700">
+                            Resultado preliminar: <strong className="text-blue-600">{r}</strong>
+                        </p>
+                    </div>
+                )}
+            </div>
         </form>
+
     );
 };
 
