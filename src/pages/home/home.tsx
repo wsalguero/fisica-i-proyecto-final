@@ -229,7 +229,7 @@ const Home = () => {
                     rel="noopener noreferrer"
                     className="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-3 rounded-xl shadow-lg transition-all text-lg"
                 >
-                    Ver Presentación en Canva
+                    Presentación Tecnica
                 </a>
             </section>
 
