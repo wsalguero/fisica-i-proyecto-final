@@ -279,7 +279,7 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
                         return (
                             <div
                                 key={index}
-                                className={`relative flex flex-col shadow-sm rounded ease-in-out h-auto ProblemsGrid__ProblemParentNode ${isFocused ? module.problemFocused : module.problemNoFocus} ${module.ProblemMainNode}  transition-all duration-300 ease-in-out `}
+                                className={`relative flex flex-col shadow-sm rounded ease-in-out h-auto ProblemsGrid__ProblemParentNode ${isFocused ? module.problemFocused : module.problemNoFocus} ${!isMobile ? module.ProblemMainNode : module.ProblemMainNodeMobile}  transition-all duration-300 ease-in-out `}
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     if (problemResolvedId !== problem.id && problemResolved && problemResolvedId > 0) {
@@ -469,7 +469,7 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
                                         </div>
                                     </div>
                                     <div
-                                        className={`flex transition-all duration-500 ease-in-out h-full ${showSolution && idProblemResolved === problem.id ? "w-full" : ""}`}
+                                        className={`flex transition-all duration-500 ease-in-out h-full pd-2 overflow ${showSolution && idProblemResolved === problem.id ? "w-full" : ""}`}
                                     >
                                         {
                                             problemResolvedId === problem.id && (

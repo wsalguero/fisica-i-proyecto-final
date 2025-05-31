@@ -1,5 +1,6 @@
 import { FormEvent, useEffect, useState } from "react";
 import module from '../problems.module.css';
+import { FaBookOpen, FaCheckCircle } from "react-icons/fa";
 
 // PROBLEM ID: 6
 const WA_by_RPM = () => <></>;
@@ -97,16 +98,47 @@ WA_by_RPM.Solution = () => {
     }, []);
 
     return (
-        <div className="bg-white shadow-md rounded-md p-6 border border-gray-200 max-w-2xl mx-auto">
-            <h2 className="text-2xl font-bold text-blue-700">Solución paso a paso</h2>
-            {w && rpm ? (
-                <div className="mt-4 space-y-4 text-gray-800">
-                    <p className="bg-gray-100 p-2 rounded italic">ω = 2π × f = 2π × ({rpm} / 60)</p>
-                    <p className="bg-gray-100 p-2 rounded italic">ω = <strong>{w} rad/s</strong></p>
-                </div>
-            ) : <p className="italic text-gray-400">Aún no se ingresaron datos.</p>}
+        <div className={`${module.Form} bg-white border border-gray-200 shadow-md rounded-md w-full`}>
+            <div className="w-full space-y-6">
+                <h2 className="text-2xl font-bold text-blue-700 flex items-center gap-2">
+                    <FaBookOpen className="text-blue-500" /> Solución paso a paso
+                </h2>
+
+                {w && rpm ? (
+                    <div className="space-y-6 text-gray-800">
+
+                        <section className="space-y-2">
+                            <p className="text-sm text-gray-600 leading-relaxed">
+                                Para obtener la <strong>velocidad angular (ω)</strong> a partir de RPM, primero convertimos a frecuencia:
+                            </p>
+                            <div className="bg-gray-100 p-3 rounded text-sm font-mono w-fit italic">
+                                ω = 2π × f = 2π × ({rpm} / 60)
+                            </div>
+                            <p className="text-sm text-gray-700">
+                                Resultado:
+                            </p>
+                            <div className="bg-gray-100 p-3 rounded text-sm font-mono w-fit italic">
+                                ω = <strong>{w} rad/s</strong>
+                            </div>
+                        </section>
+
+                        <section className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                            <h3 className="text-lg font-bold text-blue-700 mb-2 flex items-center gap-2">
+                                <FaCheckCircle className="text-green-600" /> Resultado Final:
+                            </h3>
+                            <p className="text-sm">
+                                <strong>Velocidad angular (ω):</strong> {w} rad/s
+                            </p>
+                        </section>
+
+                    </div>
+                ) : (
+                    <p className="italic text-gray-400">Aún no se ingresaron datos.</p>
+                )}
+            </div>
         </div>
     );
 };
+
 
 export default WA_by_RPM;

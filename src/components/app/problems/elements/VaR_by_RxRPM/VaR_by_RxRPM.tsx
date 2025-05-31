@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import module from '../problems.module.css';
+import { FaBookOpen, FaCheckCircle, FaInfoCircle } from 'react-icons/fa';
 // PROBLEM ID: 1
 const VaR_by_RxRPM = () => {
     return (
@@ -116,8 +117,9 @@ VaR_by_RxRPM.GraphNode = () => {
 }
 
 
+
 VaR_by_RxRPM.Solution = () => {
-    const [velocidadAngular, setVelocidadAngular] = React.useState<string | null>(null);
+    const [velocidadAngular, setVelocidadAngular] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchValue = () => {
@@ -125,8 +127,7 @@ VaR_by_RxRPM.Solution = () => {
             setVelocidadAngular(stored);
         };
 
-        fetchValue(); // Inicial
-
+        fetchValue();
         window.addEventListener("update:VaR_by_RxRPM__velocidadAngular", fetchValue);
         return () => {
             window.removeEventListener("update:VaR_by_RxRPM__velocidadAngular", fetchValue);
@@ -134,39 +135,93 @@ VaR_by_RxRPM.Solution = () => {
     }, []);
 
     return (
-        <div className="bg-white shadow-md rounded-md p-6 border border-gray-200 w-full max-w-2xl mx-auto space-y-6">
-            <h2 className="text-2xl font-bold text-blue-700">Solución paso a paso</h2>
+        <div className={`${module.Form} bg-white border border-gray-200 shadow-md rounded-md w-full`}>
+            <div className="w-full space-y-6">
+                <h2 className="text-2xl font-bold text-blue-700 flex items-center gap-2">
+                    <FaBookOpen className="text-blue-500" /> Solución paso a paso
+                </h2>
 
-            {velocidadAngular ? (
-                <div className="space-y-4 text-gray-800">
-                    <div>
-                        <h3 className="text-lg font-semibold text-blue-600">1. Calcular la frecuencia (f)</h3>
-                        <p>La frecuencia se calcula a partir del RPM:</p>
-                        <p className="mt-1 italic text-sm bg-gray-100 p-2 rounded">
-                            f = RPM / 60
-                        </p>
-                    </div>
+                {velocidadAngular ? (
+                    <div className="space-y-6 text-gray-800">
 
-                    <div>
-                        <h3 className="text-lg font-semibold text-blue-600">2. Calcular la velocidad angular (ω)</h3>
-                        <p>Usamos la fórmula: <strong>ω = 2πf</strong></p>
-                        <p className="mt-1 italic text-sm bg-gray-100 p-2 rounded">
-                            ω = {velocidadAngular} rad/s
-                        </p>
-                    </div>
+                        {/* Explicación teórica */}
+                        <section className="space-y-2">
+                            <p className="text-sm text-gray-600 leading-relaxed">
+                                En este problema de movimiento circular uniforme calculamos la velocidad angular <strong>ω</strong> a partir del radio y las revoluciones por minuto (RPM).
+                                Utilizamos dos fórmulas principales: una para convertir RPM a frecuencia, y otra para calcular ω usando la frecuencia.
+                            </p>
+                            <p className="text-sm text-gray-600 leading-relaxed">
+                                Recordá que la <strong>velocidad angular</strong> indica cuántos radianes recorre el objeto por segundo al girar.
+                            </p>
+                        </section>
 
-                    <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                        <h3 className="text-lg font-bold text-blue-700 mb-2">📘 Resultado Final:</h3>
-                        <ul className="list-disc pl-6 space-y-1">
-                            <li><strong>Velocidad angular (ω):</strong> {velocidadAngular} rad/s</li>
-                        </ul>
+                        {/* Paso 1 */}
+                        <section className="space-y-2">
+                            <h3 className="text-lg font-semibold text-blue-600">1. Calcular la frecuencia (<em>f</em>)</h3>
+                            <p>Fórmula básica:</p>
+                            <div className="bg-gray-100 p-3 rounded text-sm font-mono w-fit">
+                                f = RPM / 60
+                            </div>
+                        </section>
+
+                        {/* Paso 2 */}
+                        <section className="space-y-2">
+                            <h3 className="text-lg font-semibold text-blue-600">2. Calcular la velocidad angular (<em>ω</em>)</h3>
+                            <p>Aplicamos la fórmula:</p>
+                            <div className="bg-gray-100 p-3 rounded text-sm font-mono w-fit">
+                                ω = 2πf
+                            </div>
+                            <p className="mt-1">Resultado del cálculo:</p>
+                            <div className="bg-gray-100 p-3 rounded text-sm font-mono w-fit">
+                                ω = {velocidadAngular} rad/s
+                            </div>
+                        </section>
+
+                        {/* Tabla de fórmulas */}
+                        <section className="mt-6">
+                            <h3 className="text-lg font-semibold text-blue-600 mb-2 flex items-center gap-2">
+                                <FaInfoCircle className="text-blue-500" /> Fórmulas utilizadas
+                            </h3>
+                            <table className="w-full text-sm text-left border border-gray-300 rounded overflow-hidden">
+                                <thead className="bg-gray-100 text-gray-700">
+                                    <tr>
+                                        <th className="p-2 border border-gray-300">Nombre</th>
+                                        <th className="p-2 border border-gray-300">Fórmula</th>
+                                        <th className="p-2 border border-gray-300">Descripción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td className="p-2 border">Frecuencia (f)</td>
+                                        <td className="p-2 border">f = RPM / 60</td>
+                                        <td className="p-2 border">Convierte RPM a Hz.</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="p-2 border">Velocidad angular (ω)</td>
+                                        <td className="p-2 border">ω = 2πf</td>
+                                        <td className="p-2 border">Transforma frecuencia en radianes por segundo.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </section>
+
+                        {/* Resultado Final */}
+                        <section className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                            <h3 className="text-lg font-bold text-blue-700 mb-2 flex items-center gap-2">
+                                <FaCheckCircle className="text-green-600" /> Resultado Final:
+                            </h3>
+                            <p className="text-sm">
+                                <strong>Velocidad angular (ω):</strong> {velocidadAngular} rad/s
+                            </p>
+                        </section>
                     </div>
-                </div>
-            ) : (
-                <p className="text-gray-400 italic">Aún no se ha ingresado ningún dato.</p>
-            )}
+                ) : (
+                    <p className="text-gray-400 italic">Aún no se ha ingresado ningún dato.</p>
+                )}
+            </div>
         </div>
     );
 };
+
 
 export default VaR_by_RxRPM

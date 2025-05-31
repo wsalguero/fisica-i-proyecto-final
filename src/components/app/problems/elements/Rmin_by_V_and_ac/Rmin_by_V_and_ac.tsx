@@ -1,5 +1,6 @@
 import { FormEvent, useEffect, useState } from "react";
 import module from '../problems.module.css';
+import { FaBookOpen, FaCheckCircle } from "react-icons/fa";
 
 // PROBLEM ID: 8
 const Rmin_by_V_and_ac = () => <></>;
@@ -101,6 +102,7 @@ Rmin_by_V_and_ac.Form = () => {
 
 Rmin_by_V_and_ac.GraphNode = () => <div><h3>Graph Node para Radio mínimo de giro</h3></div>;
 
+
 Rmin_by_V_and_ac.Solution = () => {
     const [r, setR] = useState<string | null>(null);
     const [v, setV] = useState<string | null>(null);
@@ -117,21 +119,55 @@ Rmin_by_V_and_ac.Solution = () => {
         return () => window.removeEventListener("update:Rmin_by_V_and_ac__r", load);
     }, []);
 
+    const vMS = v ? (parseFloat(v) * 1000 / 3600).toFixed(2) : null;
+    const aMax = g ? (8 * parseFloat(g)).toFixed(2) : null;
+
     return (
-        <div className="bg-white shadow-md rounded-md p-6 border border-gray-200 max-w-2xl mx-auto">
-            <h2 className="text-2xl font-bold text-blue-700">Solución paso a paso</h2>
-            {r && v && g ? (
-                <div className="mt-4 space-y-4 text-gray-800">
-                    <p className="bg-gray-100 p-2 rounded italic">1. Calcular velocidad en m/s:<br />
-                        v = {v} × 1000 / 3600 = <strong>{(parseFloat(v) * 1000 / 3600).toFixed(2)} m/s</strong></p>
+        <div className={`${module.Form} bg-white border border-gray-200 shadow-md rounded-md w-full`}>
+            <div className="w-full space-y-6">
+                <h2 className="text-2xl font-bold text-blue-700 flex items-center gap-2">
+                    <FaBookOpen className="text-blue-500" /> Solución paso a paso
+                </h2>
 
-                    <p className="bg-gray-100 p-2 rounded italic">2. a<sub>max</sub> = 8 × {g} = <strong>{(8 * parseFloat(g)).toFixed(2)} m/s²</strong></p>
+                {r && v && g ? (
+                    <div className="space-y-6 text-gray-800">
 
-                    <p className="bg-gray-100 p-2 rounded italic">3. r = v² / a<sub>c</sub> = <strong>{r}</strong></p>
-                </div>
-            ) : <p className="italic text-gray-400">Aún no se ingresaron datos.</p>}
+                        <section className="space-y-2">
+                            <h3 className="text-lg font-semibold text-blue-600">1. Convertir velocidad (km/h → m/s)</h3>
+                            <div className="bg-gray-100 p-3 rounded text-sm font-mono w-fit italic">
+                                v = {v} × 1000 / 3600 = <strong>{vMS} m/s</strong>
+                            </div>
+                        </section>
+
+                        <section className="space-y-2">
+                            <h3 className="text-lg font-semibold text-blue-600">2. Calcular aceleración máxima soportada</h3>
+                            <div className="bg-gray-100 p-3 rounded text-sm font-mono w-fit italic">
+                                a<sub>máx</sub> = 8 × {g} = <strong>{aMax} m/s²</strong>
+                            </div>
+                        </section>
+
+                        <section className="space-y-2">
+                            <h3 className="text-lg font-semibold text-blue-600">3. Calcular radio mínimo (r)</h3>
+                            <div className="bg-gray-100 p-3 rounded text-sm font-mono w-fit italic">
+                                r = v² / a<sub>c</sub> = <strong>{r} m</strong>
+                            </div>
+                        </section>
+
+                        <section className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                            <h3 className="text-lg font-bold text-blue-700 mb-2 flex items-center gap-2">
+                                <FaCheckCircle className="text-green-600" /> Resultado Final:
+                            </h3>
+                            <p className="text-sm">
+                                <strong>Radio mínimo:</strong> {r} metros
+                            </p>
+                        </section>
+
+                    </div>
+                ) : (
+                    <p className="italic text-gray-400">Aún no se ingresaron datos.</p>
+                )}
+            </div>
         </div>
     );
-};
-
+}
 export default Rmin_by_V_and_ac;

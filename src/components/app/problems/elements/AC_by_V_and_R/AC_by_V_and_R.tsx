@@ -1,5 +1,6 @@
 import { FormEvent, useEffect, useState } from "react";
 import module from '../problems.module.css';
+import { FaBookOpen, FaCheckCircle } from "react-icons/fa";
 
 // PROBLEM ID: 10
 const AC_by_V_and_R = () => <></>;
@@ -113,14 +114,58 @@ AC_by_V_and_R.Solution = () => {
     }, []);
 
     return (
-        <div className="bg-white shadow-md rounded-md p-6 border border-gray-200 max-w-2xl mx-auto">
-            <h2 className="text-2xl font-bold text-blue-700">Solución paso a paso</h2>
-            {ac && v && r ? (
-                <div className="space-y-4 text-gray-800">
-                    <p className="bg-gray-100 p-2 rounded italic">a<sub>c</sub> = {v}² / {r}</p>
-                    <p className="bg-gray-100 p-2 rounded italic">a<sub>c</sub> = <strong>{ac}</strong></p>
-                </div>
-            ) : <p className="italic text-gray-400">Aún no se han ingresado datos.</p>}
+        <div className={`${module.Form} bg-white border border-gray-200 shadow-md rounded-md w-full`}>
+            <div className="w-full space-y-6">
+                <h2 className="text-2xl font-bold text-blue-700 flex items-center gap-2">
+                    <FaBookOpen className="text-blue-500" /> Solución paso a paso
+                </h2>
+
+                {ac && v && r ? (
+                    <div className="space-y-6 text-gray-800">
+
+                        {/* Explicación teórica */}
+                        <section className="space-y-2">
+                            <p className="text-sm text-gray-600 leading-relaxed">
+                                La <strong>aceleración centrípeta</strong> es la aceleración que mantiene un objeto en una trayectoria circular. Se calcula con la fórmula:
+                            </p>
+                            <div className="bg-gray-100 p-3 rounded text-sm font-mono w-fit italic">
+                                a<sub>c</sub> = v² / r
+                            </div>
+                            <p className="text-sm text-gray-600 leading-relaxed">
+                                Donde:
+                                <br />
+                                <strong>v</strong> es la velocidad lineal (en m/s)
+                                <br />
+                                <strong>r</strong> es el radio de la trayectoria (en m)
+                            </p>
+                        </section>
+
+                        {/* Sustitución y desarrollo */}
+                        <section className="space-y-2">
+                            <p className="font-medium text-gray-700">Sustituyendo los valores obtenidos:</p>
+                            <div className="bg-gray-100 p-3 rounded text-sm font-mono w-fit italic">
+                                a<sub>c</sub> = {v}² / {r}
+                            </div>
+                            <div className="bg-gray-100 p-3 rounded text-sm font-mono w-fit italic">
+                                a<sub>c</sub> = <strong>{ac}</strong> m/s²
+                            </div>
+                        </section>
+
+                        {/* Resultado final */}
+                        <section className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                            <h3 className="text-lg font-bold text-blue-700 mb-2 flex items-center gap-2">
+                                <FaCheckCircle className="text-green-600" /> Resultado Final:
+                            </h3>
+                            <p className="text-sm">
+                                <strong>Aceleración centrípeta (a<sub>c</sub>):</strong> {ac} m/s²
+                            </p>
+                        </section>
+
+                    </div>
+                ) : (
+                    <p className="italic text-gray-400">Aún no se han ingresado datos.</p>
+                )}
+            </div>
         </div>
     );
 };

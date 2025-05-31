@@ -1,4 +1,5 @@
 import { FormEvent, useEffect, useState } from 'react';
+import { FaBookOpen, FaCheckCircle } from "react-icons/fa";
 import module from '../problems.module.css';
 
 // PROBLEM ID: 5
@@ -100,6 +101,7 @@ WA_by_VR.GraphNode = () => {
     return <div><h3>Graph Node for ω = v / r</h3></div>;
 };
 
+
 WA_by_VR.Solution = () => {
     const [w, setW] = useState<string | null>(null);
     const [r, setR] = useState<string | null>(null);
@@ -118,32 +120,49 @@ WA_by_VR.Solution = () => {
     }, []);
 
     return (
-        <div className="bg-white shadow-md rounded-md p-6 border border-gray-200 w-full max-w-2xl mx-auto space-y-6">
-            <h2 className="text-2xl font-bold text-blue-700">Solución paso a paso</h2>
+        <div className={`${module.Form} bg-white border border-gray-200 shadow-md rounded-md w-full`}>
+            <div className="w-full space-y-6">
+                <h2 className="text-2xl font-bold text-blue-700 flex items-center gap-2">
+                    <FaBookOpen className="text-blue-500" /> Solución paso a paso
+                </h2>
 
-            {w && r && v ? (
-                <div className="space-y-4 text-gray-800">
-                    <div>
-                        <h3 className="text-lg font-semibold text-blue-600">1. Aplicar fórmula ω = v / r</h3>
-                        <p className="italic text-sm bg-gray-100 p-2 rounded">
-                            ω = {v} / {r} = <strong>{parseFloat(w).toFixed(2)} rad/s</strong>
-                        </p>
-                    </div>
+                {w && r && v ? (
+                    <div className="space-y-6 text-gray-800">
 
-                    <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                        <h3 className="text-lg font-bold text-blue-700 mb-2">📘 Resultado Final:</h3>
-                        <ul className="list-disc pl-6 space-y-1">
-                            <li><strong>Velocidad Angular (ω):</strong> {parseFloat(w).toFixed(2)} rad/s</li>
-                            <li><strong>Velocidad Lineal:</strong> {v} m/s</li>
-                            <li><strong>Radio:</strong> {r} m</li>
-                        </ul>
+                        {/* Paso 1 */}
+                        <section className="space-y-2">
+                            <h3 className="text-lg font-semibold text-blue-600">1. Aplicar fórmula</h3>
+                            <p className="text-sm text-gray-600">
+                                Usamos la relación entre velocidad lineal y velocidad angular:
+                            </p>
+                            <div className="bg-gray-100 p-3 rounded text-sm font-mono w-fit italic">
+                                ω = v / r
+                            </div>
+                            <div className="bg-gray-100 p-3 rounded text-sm font-mono w-fit italic">
+                                ω = {v} / {r} = <strong>{parseFloat(w).toFixed(2)} rad/s</strong>
+                            </div>
+                        </section>
+
+                        {/* Resultado final */}
+                        <section className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                            <h3 className="text-lg font-bold text-blue-700 mb-2 flex items-center gap-2">
+                                <FaCheckCircle className="text-green-600" /> Resultado Final:
+                            </h3>
+                            <ul className="list-disc pl-6 space-y-1 text-sm">
+                                <li><strong>Velocidad Angular (ω):</strong> {parseFloat(w).toFixed(2)} rad/s</li>
+                                <li><strong>Velocidad Lineal:</strong> {v} m/s</li>
+                                <li><strong>Radio:</strong> {r} m</li>
+                            </ul>
+                        </section>
+
                     </div>
-                </div>
-            ) : (
-                <p className="text-gray-400 italic">Aún no se ha ingresado ningún dato.</p>
-            )}
+                ) : (
+                    <p className="italic text-gray-400">Aún no se ha ingresado ningún dato.</p>
+                )}
+            </div>
         </div>
     );
 };
+
 
 export default WA_by_VR;

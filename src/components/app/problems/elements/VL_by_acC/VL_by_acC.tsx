@@ -1,5 +1,6 @@
 import { FormEvent, useEffect, useState } from 'react';
 import module from '../problems.module.css';
+import { FaBookOpen, FaCheckCircle } from 'react-icons/fa';
 
 // PROBLEM ID: 4
 const VL_by_acC = () => <></>;
@@ -100,6 +101,7 @@ VL_by_acC.GraphNode = () => {
     return <div><h3>Graph Node for Velocidad Lineal por a<sub>c</sub></h3></div>;
 };
 
+
 VL_by_acC.Solution = () => {
     const [v, setV] = useState<string | null>(null);
     const [r, setR] = useState<string | null>(null);
@@ -118,37 +120,48 @@ VL_by_acC.Solution = () => {
     }, []);
 
     return (
-        <div className="bg-white shadow-md rounded-md p-6 border border-gray-200 w-full max-w-2xl mx-auto space-y-6">
-            <h2 className="text-2xl font-bold text-blue-700">Solución paso a paso</h2>
+        <div className={`${module.Form} bg-white border border-gray-200 shadow-md rounded-md w-full`}>
+            <div className="w-full space-y-6">
+                <h2 className="text-2xl font-bold text-blue-700 flex items-center gap-2">
+                    <FaBookOpen className="text-blue-500" /> Solución paso a paso
+                </h2>
 
-            {v && r && ac ? (
-                <div className="space-y-4 text-gray-800">
-                    <div>
-                        <h3 className="text-lg font-semibold text-blue-600">1. Usar fórmula de aceleración centrípeta</h3>
-                        <p className="italic text-sm bg-gray-100 p-2 rounded">
-                            a<sub>c</sub> = v² / r → v = √(a<sub>c</sub> × r)
-                        </p>
-                    </div>
+                {v && r && ac ? (
+                    <div className="space-y-6 text-gray-800">
 
-                    <div>
-                        <h3 className="text-lg font-semibold text-blue-600">2. Sustituir y calcular</h3>
-                        <p className="italic text-sm bg-gray-100 p-2 rounded">
-                            v = √({ac} × {r}) = <strong>{v} m/s</strong>
-                        </p>
-                    </div>
+                        <section className="space-y-2">
+                            <h3 className="text-lg font-semibold text-blue-600">1. Fórmula de aceleración centrípeta</h3>
+                            <p className="text-sm text-gray-600">
+                                Partimos de la ecuación:
+                            </p>
+                            <div className="bg-gray-100 p-3 rounded text-sm font-mono w-fit italic">
+                                a<sub>c</sub> = v² / r → v = √(a<sub>c</sub> × r)
+                            </div>
+                        </section>
 
-                    <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                        <h3 className="text-lg font-bold text-blue-700 mb-2">📘 Resultado Final:</h3>
-                        <ul className="list-disc pl-6 space-y-1">
-                            <li><strong>Velocidad Lineal (v):</strong> {v} m/s</li>
-                            <li><strong>Radio:</strong> {r} m</li>
-                            <li><strong>Aceleración centrípeta:</strong> {ac} m/s²</li>
-                        </ul>
+                        <section className="space-y-2">
+                            <h3 className="text-lg font-semibold text-blue-600">2. Sustituimos y resolvemos</h3>
+                            <div className="bg-gray-100 p-3 rounded text-sm font-mono w-fit italic">
+                                v = √({ac} × {r}) = <strong>{v} m/s</strong>
+                            </div>
+                        </section>
+
+                        <section className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                            <h3 className="text-lg font-bold text-blue-700 mb-2 flex items-center gap-2">
+                                <FaCheckCircle className="text-green-600" /> Resultado Final:
+                            </h3>
+                            <ul className="list-disc pl-6 space-y-1 text-sm">
+                                <li><strong>Velocidad lineal (v):</strong> {v} m/s</li>
+                                <li><strong>Radio (r):</strong> {r} m</li>
+                                <li><strong>Aceleración centrípeta (a<sub>c</sub>):</strong> {ac} m/s²</li>
+                            </ul>
+                        </section>
+
                     </div>
-                </div>
-            ) : (
-                <p className="text-gray-400 italic">Aún no se ha ingresado ningún dato.</p>
-            )}
+                ) : (
+                    <p className="italic text-gray-400">Aún no se ha ingresado ningún dato.</p>
+                )}
+            </div>
         </div>
     );
 };

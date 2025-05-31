@@ -1,5 +1,6 @@
 import { FormEvent, useEffect, useState } from "react";
 import module from '../problems.module.css';
+import { FaBookOpen, FaCheckCircle } from "react-icons/fa";
 
 // PROBLEM ID: 7
 const AC_by_WR = () => <></>;
@@ -114,14 +115,58 @@ AC_by_WR.Solution = () => {
     }, []);
 
     return (
-        <div className="bg-white shadow-md rounded-md p-6 border border-gray-200 max-w-2xl mx-auto">
-            <h2 className="text-2xl font-bold text-blue-700">Solución paso a paso</h2>
-            {ac && w && r ? (
-                <div className="mt-4 space-y-4 text-gray-800">
-                    <p className="bg-gray-100 p-2 rounded italic">a<sub>c</sub> = ω² × r = ({w})² × {r}</p>
-                    <p className="bg-gray-100 p-2 rounded italic">a<sub>c</sub> = <strong>{ac} m/s²</strong></p>
-                </div>
-            ) : <p className="italic text-gray-400">Aún no se ingresaron datos.</p>}
+        <div className={`${module.Form} bg-white border border-gray-200 shadow-md rounded-md w-full`}>
+            <div className="w-full space-y-6">
+                <h2 className="text-2xl font-bold text-blue-700 flex items-center gap-2">
+                    <FaBookOpen className="text-blue-500" /> Solución paso a paso
+                </h2>
+
+                {ac && w && r ? (
+                    <div className="space-y-6 text-gray-800">
+
+                        {/* Explicación general */}
+                        <section className="space-y-2">
+                            <p className="text-sm text-gray-600 leading-relaxed">
+                                En esta ocasión usamos la fórmula de aceleración centrípeta con <strong>velocidad angular</strong>:
+                            </p>
+                            <div className="bg-gray-100 p-3 rounded text-sm font-mono w-fit italic">
+                                a<sub>c</sub> = ω² × r
+                            </div>
+                            <p className="text-sm text-gray-600 leading-relaxed">
+                                Donde:
+                                <br />
+                                <strong>ω</strong>: velocidad angular (rad/s)
+                                <br />
+                                <strong>r</strong>: radio del giro (m)
+                            </p>
+                        </section>
+
+                        {/* Sustitución */}
+                        <section className="space-y-2">
+                            <p className="font-medium text-gray-700">Sustituyendo los valores:</p>
+                            <div className="bg-gray-100 p-3 rounded text-sm font-mono w-fit italic">
+                                a<sub>c</sub> = ({w})² × {r}
+                            </div>
+                            <div className="bg-gray-100 p-3 rounded text-sm font-mono w-fit italic">
+                                a<sub>c</sub> = <strong>{ac}</strong> m/s²
+                            </div>
+                        </section>
+
+                        {/* Resultado */}
+                        <section className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                            <h3 className="text-lg font-bold text-blue-700 mb-2 flex items-center gap-2">
+                                <FaCheckCircle className="text-green-600" /> Resultado Final:
+                            </h3>
+                            <p className="text-sm">
+                                <strong>Aceleración centrípeta (a<sub>c</sub>):</strong> {ac} m/s²
+                            </p>
+                        </section>
+
+                    </div>
+                ) : (
+                    <p className="italic text-gray-400">Aún no se ingresaron datos.</p>
+                )}
+            </div>
         </div>
     );
 };

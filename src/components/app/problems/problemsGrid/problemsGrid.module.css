@@ -58,11 +58,27 @@
   height: fit-content;
 
   @media (max-width: 1024px) and (orientation: landscape) {
-    height: 100dvh;
+    height: 100dvh !important;
   }
 
   @media (max-width: 768px) {
-    height: auto;
+    max-height: auto;
+    mix-height: 100vh !important;
+  }
+}
+
+.ProblemMainNodeMobile {
+  min-height: 100dvh;
+  height: fit-content;
+
+  @media (max-width: 1024px) and (orientation: landscape) {
+    height: 100dvh !important;
+  }
+
+  @media (max-width: 768px) {
+    max-height: auto;
+    mix-height: 100vh !important;
+    padding-bottom: 1rem;
   }
 }
 
@@ -117,7 +133,6 @@
   padding-bottom: 1rem;
   padding-left: 1rem;
   padding-right: 1rem;
-
   @media (max-width: 768px) {
     padding-left: 0;
     padding-right: 0;
@@ -167,17 +182,60 @@
 
 .ProblemsNodesParentContainer {
   display: flex;
-  overflow-y: auto;
   max-height: calc(100vh - 10rem);
   width: 100%;
+  overflow: auto;
+  gap: 1.5rem;
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(144, 111, 253, 0.2) transparent;
 
   @media (max-width: 1024px) and (orientation: landscape) {
+    max-height: 1000vh;
+  }
+
+  @media (max-width: 768px) {
+    max-height: 1000dvh;
+  }
+}
+
+/* Chrome, Edge, Safari */
+.ProblemsNodesParentContainer::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.ProblemsNodesParentContainer::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.ProblemsNodesParentContainer::-webkit-scrollbar-thumb {
+  background-color: #bba7f733; /* violeta claro transparente */
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+  transition: background-color 0.3s ease;
+}
+
+.ProblemsNodesParentContainer::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(
+    216,
+    199,
+    255,
+    0.4
+  ); /* un poco más fuerte al hacer hover */
+}
+
+@media (max-width: 1024px) and (orientation: landscape) {
+  .ProblemsNodesParentContainer {
     flex-direction: column;
     width: 100%;
     padding: 1rem;
   }
+}
 
-  @media (max-width: 768px) {
+@media (max-width: 768px) {
+  .ProblemsNodesParentContainer {
     flex-direction: column;
     width: 100%;
   }
@@ -185,7 +243,8 @@
 
 .ProblemsNodeContainer {
   width: 50%;
-
+  overflow-y: auto;
+  padding-bottom: 1rem;
   @media (max-width: 1024px) and (orientation: landscape) {
     width: 100%;
     padding: 25px;

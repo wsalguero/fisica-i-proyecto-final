@@ -1,5 +1,6 @@
 import { FormEvent, useEffect, useState } from 'react';
 import module from '../problems.module.css';
+import { FaBookOpen, FaCheckCircle } from 'react-icons/fa';
 
 // PROBLEM ID: 3
 const VL_by_RxRPM = () => <></>;
@@ -122,37 +123,54 @@ VL_by_RxRPM.Solution = () => {
     }, []);
 
     return (
-        <div className="bg-white shadow-md rounded-md p-6 border border-gray-200 w-full max-w-2xl mx-auto space-y-6">
-            <h2 className="text-2xl font-bold text-blue-700">Solución paso a paso</h2>
+        <div className={`${module.Form} bg-white border border-gray-200 shadow-md rounded-md w-full`}>
+            <div className="w-full space-y-6">
+                <h2 className="text-2xl font-bold text-blue-700 flex items-center gap-2">
+                    <FaBookOpen className="text-blue-500" /> Solución paso a paso
+                </h2>
 
-            {v && r && w ? (
-                <div className="space-y-4 text-gray-800">
-                    <div>
-                        <h3 className="text-lg font-semibold text-blue-600">1. Calcular ω (velocidad angular)</h3>
-                        <p className="italic text-sm bg-gray-100 p-2 rounded">
-                            ω = 2π × f = <strong>{parseFloat(w).toFixed(2)} rad/s</strong>
-                        </p>
-                    </div>
+                {v && r && w ? (
+                    <div className="space-y-6 text-gray-800">
 
-                    <div>
-                        <h3 className="text-lg font-semibold text-blue-600">2. Aplicar fórmula v = ω × r</h3>
-                        <p className="italic text-sm bg-gray-100 p-2 rounded">
-                            v = {parseFloat(w).toFixed(2)} × {r} = <strong>{v} m/s</strong>
-                        </p>
-                    </div>
+                        {/* Paso 1 */}
+                        <section className="space-y-2">
+                            <h3 className="text-lg font-semibold text-blue-600">1. Calcular ω (velocidad angular)</h3>
+                            <p className="text-sm text-gray-600">
+                                La fórmula es:
+                            </p>
+                            <div className="bg-gray-100 p-3 rounded text-sm font-mono w-fit italic">
+                                ω = 2π × f = <strong>{parseFloat(w).toFixed(2)} rad/s</strong>
+                            </div>
+                        </section>
 
-                    <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                        <h3 className="text-lg font-bold text-blue-700 mb-2">📘 Resultado Final:</h3>
-                        <ul className="list-disc pl-6 space-y-1">
-                            <li><strong>Velocidad Lineal (v):</strong> {v} m/s</li>
-                            <li><strong>Radio:</strong> {r} m</li>
-                            <li><strong>Velocidad Angular (ω):</strong> {parseFloat(w).toFixed(2)} rad/s</li>
-                        </ul>
+                        {/* Paso 2 */}
+                        <section className="space-y-2">
+                            <h3 className="text-lg font-semibold text-blue-600">2. Calcular v (velocidad lineal)</h3>
+                            <p className="text-sm text-gray-600">
+                                Usamos la fórmula v = ω × r:
+                            </p>
+                            <div className="bg-gray-100 p-3 rounded text-sm font-mono w-fit italic">
+                                v = {parseFloat(w).toFixed(2)} × {r} = <strong>{v} m/s</strong>
+                            </div>
+                        </section>
+
+                        {/* Resultado final */}
+                        <section className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                            <h3 className="text-lg font-bold text-blue-700 mb-2 flex items-center gap-2">
+                                <FaCheckCircle className="text-green-600" /> Resultado Final:
+                            </h3>
+                            <ul className="list-disc pl-6 space-y-1 text-sm">
+                                <li><strong>Velocidad lineal (v):</strong> {v} m/s</li>
+                                <li><strong>Radio:</strong> {r} m</li>
+                                <li><strong>Velocidad angular (ω):</strong> {parseFloat(w).toFixed(2)} rad/s</li>
+                            </ul>
+                        </section>
+
                     </div>
-                </div>
-            ) : (
-                <p className="text-gray-400 italic">Aún no se ha ingresado ningún dato.</p>
-            )}
+                ) : (
+                    <p className="italic text-gray-400">Aún no se ha ingresado ningún dato.</p>
+                )}
+            </div>
         </div>
     );
 };

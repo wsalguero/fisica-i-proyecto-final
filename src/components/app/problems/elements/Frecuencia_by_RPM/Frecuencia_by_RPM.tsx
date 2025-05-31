@@ -1,5 +1,6 @@
 import { FormEvent, useEffect, useState } from 'react'
 import module from '../problems.module.css';
+import { FaBookOpen, FaCheckCircle } from 'react-icons/fa';
 
 // PROBLEM ID: 2
 const Frecuencia_by_RPM = () => {
@@ -109,29 +110,47 @@ Frecuencia_by_RPM.Solution = () => {
     }, []);
 
     return (
-        <div className="bg-white shadow-md rounded-md p-6 border border-gray-200 w-full max-w-2xl mx-auto space-y-6">
-            <h2 className="text-2xl font-bold text-blue-700">Solución paso a paso</h2>
+        <div className={`${module.Form} bg-white border border-gray-200 shadow-md rounded-md w-full`}>
+            <div className="w-full space-y-6">
+                <h2 className="text-2xl font-bold text-blue-700 flex items-center gap-2">
+                    <FaBookOpen className="text-blue-500" /> Solución paso a paso
+                </h2>
 
-            {f ? (
-                <div className="space-y-4 text-gray-800">
-                    <div>
-                        <h3 className="text-lg font-semibold text-blue-600">1. Calcular la frecuencia (f)</h3>
-                        <p>La frecuencia se obtiene dividiendo el RPM entre 60:</p>
-                        <p className="mt-1 italic text-sm bg-gray-100 p-2 rounded">
-                            f = RPM / 60 = <strong>{f} Hz</strong>
-                        </p>
-                    </div>
+                {f ? (
+                    <div className="space-y-6 text-gray-800">
 
-                    <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                        <h3 className="text-lg font-bold text-blue-700 mb-2">📘 Resultado Final:</h3>
-                        <ul className="list-disc pl-6 space-y-1">
-                            <li><strong>Frecuencia (f):</strong> {f} Hz</li>
-                        </ul>
+                        {/* Paso único */}
+                        <section className="space-y-2">
+                            <h3 className="text-lg font-semibold text-blue-600">1. Calcular la frecuencia (<em>f</em>)</h3>
+                            <p className="text-sm text-gray-600 leading-relaxed">
+                                La frecuencia indica cuántas vueltas por segundo da un objeto en movimiento circular. Se calcula a partir de las revoluciones por minuto (RPM) usando la fórmula:
+                            </p>
+                            <div className="bg-gray-100 p-3 rounded text-sm font-mono w-fit italic">
+                                f = RPM / 60
+                            </div>
+                            <p className="text-sm text-gray-700 mt-1">
+                                Resultado:
+                                <br />
+                                <span className="bg-gray-100 p-2 rounded inline-block mt-1">
+                                    <strong>{f} Hz</strong>
+                                </span>
+                            </p>
+                        </section>
+
+                        {/* Resultado final */}
+                        <section className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                            <h3 className="text-lg font-bold text-blue-700 mb-2 flex items-center gap-2">
+                                <FaCheckCircle className="text-green-600" /> Resultado Final:
+                            </h3>
+                            <p className="text-sm">
+                                <strong>Frecuencia (f):</strong> {f} Hz
+                            </p>
+                        </section>
                     </div>
-                </div>
-            ) : (
-                <p className="text-gray-400 italic">Aún no se ha ingresado ningún dato.</p>
-            )}
+                ) : (
+                    <p className="text-gray-400 italic">Aún no se ha ingresado ningún dato.</p>
+                )}
+            </div>
         </div>
     );
 };
