@@ -368,7 +368,10 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
                                                                             <button
                                                                                 onClick={(e) => {
                                                                                     e.stopPropagation();
-                                                                                    setMobileShowTags(!mobileShowTags);
+
+                                                                                    if (focusedProblemId === problem.id) {
+                                                                                        setMobileShowTags(!mobileShowTags);
+                                                                                    }
                                                                                 }}
                                                                                 className="flex justify-between items-center rounded-md shadow-sm text-purple-500 hover:text-purple-700 transition-all w-full p-2 h-[3rem] bg-white border border-purple-200 hover:border-purple-300"
                                                                             >
@@ -401,7 +404,10 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
                                                                 <button
                                                                     onClick={(e) => {
                                                                         e.stopPropagation();
-                                                                        setShowSolution(!showSolution);
+                                                                        if (problem.id === problemResolvedId) {
+
+                                                                            setShowSolution(!showSolution);
+                                                                        }
                                                                     }}
                                                                     className={`${module.ViewSolutionButton} h-[3rem] p-2 cursor-pointer bg-white transition-all duration-300 ease-in-out  text-center
                                                                             ${showSolution ? module.ButtonSolutionOpen : module.ButtonSolutionClose}`}
