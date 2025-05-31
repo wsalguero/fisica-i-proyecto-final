@@ -3,12 +3,22 @@ import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { FaAtom, FaToolbox, FaUsers } from "react-icons/fa"
 import module from "./home.module.css"
+import Lenis from '@studio-freight/lenis'
+
+const lenis = new Lenis()
+function raf(time: number) {
+    lenis.raf(time)
+    requestAnimationFrame(raf)
+}
+requestAnimationFrame(raf)
 
 gsap.registerPlugin(ScrollTrigger)
 
 const Home = () => {
     const containerRef = useRef(null)
     const flechasRef = useRef<(HTMLSpanElement | null)[]>([])
+    const arrowsGridRef = useRef<HTMLDivElement | null>(null)
+    // const titleGrowRef = useRef<HTMLHeadingElement | null>(null)
 
     useEffect(() => {
         const ctx = gsap.context(() => {
@@ -37,6 +47,51 @@ const Home = () => {
                     scrub: true,
                 },
             })
+
+            // Flechas grid animación
+            gsap.fromTo(
+                ".arrow-div",
+                { x: -100, opacity: 0 },
+                {
+                    x: 0,
+                    opacity: 1,
+                    stagger: 0.05,
+                    duration: 1,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: "#que-es",
+                        start: "top 80%",
+                    },
+                }
+            )
+
+            gsap.to("#title-expand", {
+                scale: 1.4,
+                scrollTrigger: {
+                    trigger: "#que-es",
+                    start: "top center",
+                    end: "bottom center",
+                    scrub: true,
+                },
+            })
+
+            gsap.utils.toArray<HTMLElement>(".popup-img").forEach((el) => {
+                gsap.fromTo(
+                    el,
+                    { scale: 0.6, opacity: 0 },
+                    {
+                        scale: 1,
+                        opacity: 1,
+                        duration: 1,
+                        ease: "back.out(1.7)",
+                        scrollTrigger: {
+                            trigger: el,
+                            start: "top 85%",
+                        },
+                    }
+                )
+            })
+
 
         }, containerRef)
         return () => ctx.revert()
@@ -100,6 +155,70 @@ const Home = () => {
                             </ul>
                         </div>
                     </div>
+                </div>
+            </section>
+
+            {/* Segunda sección - ¿Qué es el MCU? */}
+            <section id="que-es" className="min-h-screen py-20 px-6 md:px-12 bg-[#0b0e2a] flex flex-col md:flex-row gap-10 items-center justify-between">
+                <div ref={arrowsGridRef} className={`grid grid-cols-6 gap-6 w-full md:w-1/2 ${module.ArrowsGrid}`}>
+                    {[...Array(30)].map((_, i) => (
+                        <div
+                            key={i}
+                            className={`arrow-div w-6 h-6 border-r-4 border-b-4 rotate-45 border-blue-400 ${module.ArrowDiv}`}
+                        ></div>
+                    ))}
+                </div>
+                <div className="w-full md:w-1/2 text-center md:text-left">
+                    <h2
+                        id="title-expand"
+                        className="text-4xl md:text-5xl font-extrabold text-purple-100 mb-6"
+                    >
+                        ¿QUÉ ES EL MCU?
+                    </h2>
+                    <p className={`"text-lg text-purple-200 leading-relaxed ${module.TextoQueEs}`}>
+                        El Movimiento Circular Uniforme es un tipo de movimiento en el que un objeto se desplaza a lo largo de una trayectoria circular con velocidad constante. Aunque la magnitud de la velocidad se mantiene, su dirección cambia constantemente, generando una aceleración centrípeta.
+                    </p>
+                </div>
+            </section>
+
+            {/* Segunda sección - descubrimiento */}
+            <section id="descubrimiento" className="flex flex-col items-center h-screen px-10 py-20">
+                <h2 className={`text-5xl font-extrabold text-center mb-16 text-purple-100 drop-shadow-md ${module.TituloPortada} `}>
+                    ¿CÓMO SE DESCUBRIÓ?
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
+                    {[
+                        {
+                            nombre: "Aristóteles",
+                            desc: "Planteó las primeras ideas de movimiento.",
+                            img: "https://cdn-icons-png.flaticon.com/128/7187/7187988.png",
+                        },
+                        {
+                            nombre: "Galileo",
+                            desc: "Propuso ideas sobre aceleración y velocidad.",
+                            img: "https://cdn-icons-png.flaticon.com/128/9937/9937359.png",
+                        },
+                        {
+                            nombre: "Kepler y Newton",
+                            desc: "Describieron el movimiento de los planetas y la ley de gravitación universal.",
+                            img: "https://cdn-icons-png.flaticon.com/128/5010/5010061.png",
+                        },
+                    ].map((item, i) => (
+                        <div
+                            key={i}
+                            className="popup-img bg-[#0b0e2a] border border-purple-600 p-6 rounded-xl shadow-lg transition-all"
+                        >
+                            <img
+                                src={item.img}
+                                alt={item.nombre}
+                                className="w-24 h-24 mx-auto mb-4 animate-bounce bg-white rounded-full"
+                            />
+                            <h3 className="text-xl font-semibold text-purple-200 mb-2 text-purple-100">
+                                {item.nombre}
+                            </h3>
+                            <p className="text-purple-300 text-sm">{item.desc}</p>
+                        </div>
+                    ))}
                 </div>
             </section>
 

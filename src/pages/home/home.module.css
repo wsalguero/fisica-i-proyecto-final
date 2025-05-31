@@ -9,6 +9,7 @@
 
 .FlechaGlow {
   box-shadow: 0 0 40px 10px #3b82f6, 0 0 80px 40px white;
+  opacity: 1;
 
   @media (max-width: 1024px) and (orientation: landscape) {
     box-shadow: none;
@@ -66,5 +67,38 @@
     width: 150px; /* w-36 */
     height: 80px; /* h-10 */
     font-size: 1.2rem; /* text-sm */
+  }
+}
+/*  */
+
+.ArrowsGrid {
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+.ArrowDiv {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  height: 100px;
+  background-color: #6a0dd4; /* bg-purple-700 */
+  border-radius: 0.375rem; /* rounded-md */
+  color: #ffffff; /* text-white */
+  font-size: 1.5rem; /* text-lg */
+  font-weight: bold; /* font-semibold */
+  transition: all 0.3s ease;
+  filter: blur(15px);
+
+  &:hover {
+    background-color: #380a9e; /* hover:bg-purple-800 */
+    transform: scale(1.05); /* transform scale-105 */
+    box-shadow: 0px 4px 20px rgba(106, 13, 212, 0.5);
+  }
+
+  @media (max-width: 1024px) and (orientation: landscape) {
+    box-shadow: none;
+    opacity: 0.2;
   }
 }
