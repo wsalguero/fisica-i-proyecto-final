@@ -123,7 +123,7 @@ const Home = () => {
                                 <div className="flex items-center justify-center gap-4">
 
                                     <p className="text-xl text-blue-800 leading-relaxed">
-                                        Equipo #4 <br />
+                                        Equipo #6 <br />
                                         <span className="text-purple-400 font-light">Ingeniería en Sistemas</span>
                                     </p>
 
