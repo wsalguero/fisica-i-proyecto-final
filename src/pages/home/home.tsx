@@ -3,14 +3,6 @@ import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { FaAtom, FaToolbox, FaUsers } from "react-icons/fa"
 import module from "./home.module.css"
-import Lenis from '@studio-freight/lenis'
-
-const lenis = new Lenis()
-function raf(time: number) {
-    lenis.raf(time)
-    requestAnimationFrame(raf)
-}
-requestAnimationFrame(raf)
 
 gsap.registerPlugin(ScrollTrigger)
 
