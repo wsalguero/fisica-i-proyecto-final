@@ -222,6 +222,18 @@ const Home = () => {
                 </div>
             </section>
 
+            <section id="presentacion" className="min-h-screen flex items-center justify-center bg-[#0b0e2a] px-4 py-20">
+                <a
+                    href="https://www.canva.com/design/DAGo3ksVU64/w79UnpzKMMW-5SDaJmiYcQ/view?utm_content=DAGo3ksVU64&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hded397866f" // <-- Reemplazá por tu link real
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-3 rounded-xl shadow-lg transition-all text-lg"
+                >
+                    Ver Presentación en Canva
+                </a>
+            </section>
+
+
         </div>
     )
 }
