@@ -190,7 +190,7 @@ AC_by_WR.GraphNode = () => {
                 <p className="text-gray-400 italic">Aún no se han ingresado datos.</p>
             )}
 
-            <div ref={nodeRef} className="text-[6rem] text-purple-500 transition-transform duration-500 ease-linear border-2 border-purple-300 rounded-full p-8 flex items-center justify-center">
+            <div ref={nodeRef} className="text-[6rem] text-purple-500   border-2 border-purple-300 rounded-full p-8 flex items-center justify-center">
                 <GiHypersonicBolt />
             </div>
 

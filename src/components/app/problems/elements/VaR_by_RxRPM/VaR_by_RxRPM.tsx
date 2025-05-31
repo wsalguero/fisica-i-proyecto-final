@@ -23,10 +23,12 @@ VaR_by_RxRPM.GraphNode = () => {
         gsap.killTweensOf(wheelRef.current);
         if (wheelRef.current) {
             tweenRef.current = gsap.to(wheelRef.current, {
-                rotate: "+=360",
+                rotation: "+=360", // ✅ más estable que 'rotate'
                 duration: 60 / omega,
-                ease: "linear",
+                ease: "none",       // mejor para rotación constante
                 repeat: -1,
+                transformOrigin: "50% 50%",
+                overwrite: "auto",
             });
         }
     };
@@ -103,7 +105,7 @@ VaR_by_RxRPM.GraphNode = () => {
                 <p className="text-gray-400 italic">Aún no se han ingresado datos.</p>
             )}
 
-            <div ref={wheelRef} className="text-[6rem] text-purple-500 transition-transform duration-500 ease-linear border-2 border-purple-300 rounded-full p-8 flex items-center justify-center">
+            <div ref={wheelRef} className="text-[6rem] text-purple-500   border-2 border-purple-300 rounded-full p-8 flex items-center justify-center">
                 <GiSteeringWheel />
             </div>
 
