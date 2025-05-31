@@ -63,7 +63,7 @@
 
   @media (max-width: 768px) {
     max-height: auto;
-    mix-height: 100vh !important;
+    min-height: 100vh !important;
   }
 }
 
@@ -72,12 +72,11 @@
   height: fit-content;
 
   @media (max-width: 1024px) and (orientation: landscape) {
-    height: 100dvh !important;
+    height: 200dvh;
   }
 
   @media (max-width: 768px) {
-    max-height: auto;
-    mix-height: 100vh !important;
+    min-height: 100vh !important;
     padding-bottom: 1rem;
   }
 }
@@ -245,13 +244,19 @@
   width: 50%;
   overflow-y: auto;
   padding-bottom: 1rem;
+  padding-top: 1rem;
+
+  border: solid 1px #e5e7eb;
+
   @media (max-width: 1024px) and (orientation: landscape) {
     width: 100%;
     padding: 25px;
+    height: max-content;
   }
 
   @media (max-width: 768px) {
     width: 100%;
+    height: max-content;
   }
 }
 

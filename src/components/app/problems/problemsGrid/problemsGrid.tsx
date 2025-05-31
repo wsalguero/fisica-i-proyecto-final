@@ -71,7 +71,6 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
     }
 
     const unFocusInProblem = (focusedProblemId: number, tagName: string) => {
-        ;
 
         if (problemResolvedId !== focusedProblemId || problemResolved || problemResolvedId > 0) {
 
@@ -98,6 +97,13 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
 
                     localStorage.clear();
 
+                    window.dispatchEvent(new CustomEvent("problem:pauseAnimation", {
+                        detail: {
+                            tag: tagName
+                        }
+                    }));
+                    window.dispatchEvent(new Event("problem:pauseAllAnimations"));
+
                     return;
                 }
             });
@@ -113,7 +119,13 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
                 }
             });
 
+            window.dispatchEvent(new CustomEvent("problem:pauseAnimation", {
+                detail: {
+                    tag: tagName
+                }
+            }));
             localStorage.clear();
+            window.dispatchEvent(new Event("problem:pauseAllAnimations"));
         }
 
     }
@@ -175,6 +187,7 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
                     setTimeout(() => {
                         hideRows();
                     }, 0);
+                    window.dispatchEvent(new Event("problem:pauseAllAnimations"));
 
                     return;
                 }
@@ -190,6 +203,7 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
 
     const handleClearSearh = () => {
 
+        debugger
         function showRows() {
             const sekeer = document.getElementById("SekeerInput") as HTMLInputElement;
             sekeer.value = ""
@@ -216,6 +230,7 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
                     setTimeout(() => {
                         showRows();
                     }, 0);
+                    window.dispatchEvent(new Event("problem:pauseAllAnimations"));
                 }
             });
         }
@@ -232,7 +247,7 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
     };
 
     return (
-        <div className='w-full h-full'>
+        <div className='w-full h-auto'>
             <div className={`${module.ProblemsFilter} flex items-center justify-between bg-white shadow-sm rounded lg:gap-4 mb-5`}>
                 <div className="h-full lg:p-4 p-2">
                     <h1 className={`lg:text-2xl text-[1.3rem] font-bold`}>Simulador de problemas</h1>
@@ -247,6 +262,7 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
                             type='button'
                             onClick={(e) => {
                                 e.stopPropagation();
+                                // window.dispatchEvent(new Event("problem:pauseAllAnimations"));
                                 if (clearSearch) {
                                     handleClearSearh();
                                     return;
@@ -274,7 +290,6 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
                                 setProblemResolvedId(idProblemResolved);
                             }
                         }, [idProblemResolved]);
-
 
                         return (
                             <div
@@ -324,6 +339,7 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
                                                                             }
                                                                         });
                                                                         localStorage.clear();
+                                                                        window.dispatchEvent(new Event("problem:pauseAllAnimations"));
 
                                                                     }
                                                                     setFocusedProblemId(null);
@@ -457,6 +473,7 @@ const ProblemsGrid: FC<IProblemsGrid> = ({ problems, idProblemResolved = 0 }) =>
                                                                     }
                                                                 });
                                                                 localStorage.clear();
+                                                                window.dispatchEvent(new Event("problem:pauseAllAnimations"));
 
                                                             }
                                                             setFocusedProblemId(null);

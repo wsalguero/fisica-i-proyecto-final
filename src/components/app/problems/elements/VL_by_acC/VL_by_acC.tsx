@@ -1,6 +1,8 @@
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 import module from '../problems.module.css';
-import { FaBookOpen, FaCheckCircle } from 'react-icons/fa';
+import { FaBookOpen, FaCheckCircle, FaPause, FaPlay } from 'react-icons/fa';
+import { GiSpeedometer } from 'react-icons/gi';
+import gsap from "gsap";
 
 // PROBLEM ID: 4
 const VL_by_acC = () => <></>;
@@ -87,7 +89,7 @@ VL_by_acC.Form = () => {
                     <div className="bg-white border border-green-300 rounded-xl shadow-sm p-5 w-full transition hover:shadow-md mt-2">
                         <h3 className="text-green-700 font-bold text-lg mb-1">Resultado</h3>
                         <p className="text-sm text-gray-700">
-                            Resultado preliminar: <strong className="text-blue-600">{vL}</strong>
+                            Resultado  : <strong className="text-blue-600">{vL}</strong>
                         </p>
                     </div>
                 )}
@@ -98,9 +100,113 @@ VL_by_acC.Form = () => {
 };
 
 VL_by_acC.GraphNode = () => {
-    return <div><h3>Graph Node for Velocidad Lineal por a<sub>c</sub></h3></div>;
-};
+    const wheelRef = useRef<HTMLDivElement>(null);
+    const tweenRef = useRef<gsap.core.Tween | null>(null);
 
+    const [lastValidV, setLastValidV] = useState<number | null>(null);
+    const [paused, setPaused] = useState<boolean>(false);
+    const tagName = "vl-by-ac-c";
+
+    const startAnimation = (v: number) => {
+        gsap.killTweensOf(wheelRef.current);
+        if (wheelRef.current) {
+            tweenRef.current = gsap.to(wheelRef.current, {
+                rotate: "+=360",
+                duration: Math.max(0.5, Math.min(30, 60 / v)),
+                ease: "linear",
+                repeat: -1,
+            });
+        }
+    };
+
+    const updateFromStorage = () => {
+        const value = localStorage.getItem("VL_by_acC__v");
+        if (value) {
+            const velocidad = parseFloat(value);
+            setLastValidV(velocidad);
+            startAnimation(velocidad);
+            setPaused(false);
+        } else {
+            if (tweenRef.current) {
+                tweenRef.current.pause();
+            } else if (lastValidV !== null) {
+                startAnimation(lastValidV);
+                (tweenRef.current as gsap.core.Tween | null)?.pause();
+            }
+            setPaused(true);
+        }
+    };
+
+    const toggleAnimation = () => {
+        if (!tweenRef.current && lastValidV !== null) {
+            startAnimation(lastValidV);
+            setPaused(false);
+            return;
+        }
+
+        if (tweenRef.current) {
+            const isPaused = tweenRef.current.paused();
+            tweenRef.current.paused(!isPaused);
+            setPaused(!paused);
+        }
+    };
+
+    useEffect(() => {
+        updateFromStorage();
+
+        const pauseOne = (e: Event) => {
+            const event = e as CustomEvent<{ tag: string }>;
+            if (event.detail?.tag === tagName) {
+                tweenRef.current?.pause();
+                setPaused(true);
+            }
+        };
+
+        const pauseAll = () => {
+            tweenRef.current?.pause();
+            setPaused(true);
+        };
+
+        window.addEventListener("update:VL_by_acC__v", updateFromStorage);
+        window.addEventListener("problem:pauseAnimation", pauseOne);
+        window.addEventListener("problem:pauseAllAnimations", pauseAll);
+
+        return () => {
+            window.removeEventListener("update:VL_by_acC__v", updateFromStorage);
+            window.removeEventListener("problem:pauseAnimation", pauseOne);
+            window.removeEventListener("problem:pauseAllAnimations", pauseAll);
+            gsap.killTweensOf(wheelRef.current);
+        };
+    }, []);
+
+    return (
+        <div className="flex flex-col items-center justify-center w-full h-full gap-6">
+            {lastValidV !== null ? (
+                <div className="bg-blue-50 border border-blue-200 text-blue-800 rounded-lg shadow px-6 py-4 text-center w-fit">
+                    <h3 className="text-lg font-semibold">Velocidad detectada</h3>
+                    <p className="text-xl font-bold">{lastValidV.toFixed(2)} m/s</p>
+                </div>
+            ) : (
+                <p className="text-gray-400 italic">Aún no se han ingresado datos.</p>
+            )}
+
+            <div ref={wheelRef} className="text-[6rem] text-purple-500 transition-transform duration-500 ease-linear border-2 border-purple-300 rounded-full p-8 flex items-center justify-center">
+                <GiSpeedometer />
+            </div>
+
+            {lastValidV !== null && (
+                <button
+                    onClick={toggleAnimation}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-md border shadow-sm text-white transition 
+                    ${paused ? "bg-green-600 hover:bg-green-700" : "bg-red-500 hover:bg-red-600"}`}
+                >
+                    {paused ? <FaPlay /> : <FaPause />}
+                    {paused ? "Reanudar" : "Pausar"}
+                </button>
+            )}
+        </div>
+    );
+};
 
 VL_by_acC.Solution = () => {
     const [v, setV] = useState<string | null>(null);

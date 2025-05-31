@@ -1,5 +1,8 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import module from '../problems.module.css';
+import { GiPlanetCore } from "react-icons/gi";
+import { FaPause, FaPlay } from "react-icons/fa";
+import gsap from "gsap";
 
 // PROBLEM ID: 9
 const Theta_by_W_and_T = () => <></>;
@@ -85,7 +88,7 @@ Theta_by_W_and_T.Form = () => {
                     <div className="bg-white border border-green-300 rounded-xl shadow-sm p-5 w-full transition hover:shadow-md mt-2">
                         <h3 className="text-green-700 font-bold text-lg mb-1">Resultado</h3>
                         <p className="text-sm text-gray-700">
-                            Resultado preliminar: <strong className="text-blue-600">{theta}</strong>
+                            Resultado  : <strong className="text-blue-600">{theta}</strong>
                         </p>
                     </div>
                 )}
@@ -95,7 +98,114 @@ Theta_by_W_and_T.Form = () => {
     );
 };
 
-Theta_by_W_and_T.GraphNode = () => <div><h3>Graph Node para θ = ω × t</h3></div>;
+Theta_by_W_and_T.GraphNode = () => {
+    const nodeRef = useRef<HTMLDivElement>(null);
+    const tweenRef = useRef<gsap.core.Tween | null>(null);
+
+    const [lastValidTheta, setLastValidTheta] = useState<number | null>(null);
+    const [paused, setPaused] = useState<boolean>(false);
+    const tagName = "theta-w-t";
+
+    const startAnimation = (theta: number) => {
+        gsap.killTweensOf(nodeRef.current);
+        if (nodeRef.current) {
+            tweenRef.current = gsap.to(nodeRef.current, {
+                rotate: "+=360",
+                duration: Math.max(1, Math.min(30, 360 / theta)),
+                ease: "linear",
+                repeat: -1
+            });
+        }
+    };
+
+    const updateFromStorage = () => {
+        const value = localStorage.getItem("Theta_by_W_and_T__theta");
+        if (value) {
+            const thetaValue = parseFloat(value);
+            setLastValidTheta(thetaValue);
+            startAnimation(thetaValue);
+            setPaused(false);
+        } else {
+            if (tweenRef.current) {
+                tweenRef.current.pause();
+            } else if (lastValidTheta !== null) {
+                startAnimation(lastValidTheta);
+                (tweenRef.current as gsap.core.Tween | null)?.pause();
+            }
+            setPaused(true);
+        }
+    };
+
+    const toggleAnimation = () => {
+        if (!tweenRef.current && lastValidTheta !== null) {
+            startAnimation(lastValidTheta);
+            setPaused(false);
+            return;
+        }
+
+        if (tweenRef.current) {
+            const isPaused = tweenRef.current.paused();
+            tweenRef.current.paused(!isPaused);
+            setPaused(!paused);
+        }
+    };
+
+    useEffect(() => {
+        updateFromStorage();
+
+        const pauseOne = (e: Event) => {
+            const event = e as CustomEvent<{ tag: string }>;
+            if (event.detail?.tag === tagName) {
+                tweenRef.current?.pause();
+                setPaused(true);
+            }
+        };
+
+        const pauseAll = () => {
+            tweenRef.current?.pause();
+            setPaused(true);
+        };
+
+        window.addEventListener("update:Theta_by_W_and_T__theta", updateFromStorage);
+        window.addEventListener("problem:pauseAnimation", pauseOne);
+        window.addEventListener("problem:pauseAllAnimations", pauseAll);
+
+        return () => {
+            window.removeEventListener("update:Theta_by_W_and_T__theta", updateFromStorage);
+            window.removeEventListener("problem:pauseAnimation", pauseOne);
+            window.removeEventListener("problem:pauseAllAnimations", pauseAll);
+            gsap.killTweensOf(nodeRef.current);
+        };
+    }, []);
+
+    return (
+        <div className="flex flex-col items-center justify-center w-full h-full gap-6">
+            {lastValidTheta !== null ? (
+                <div className="bg-blue-50 border border-blue-200 text-blue-800 rounded-lg shadow px-6 py-4 text-center w-fit">
+                    <h3 className="text-lg font-semibold">Ángulo detectado</h3>
+                    <p className="text-xl font-bold">{lastValidTheta.toFixed(3)} rad</p>
+                </div>
+            ) : (
+                <p className="text-gray-400 italic">Aún no se han ingresado datos.</p>
+            )}
+
+            <div ref={nodeRef} className="text-[6rem] text-purple-500 transition-transform duration-500 ease-linear border-2 border-purple-300 rounded-full p-8 flex items-center justify-center">
+                <GiPlanetCore />
+            </div>
+
+            {lastValidTheta !== null && (
+                <button
+                    onClick={toggleAnimation}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-md border shadow-sm text-white transition 
+                    ${paused ? "bg-green-600 hover:bg-green-700" : "bg-red-500 hover:bg-red-600"}`}
+                >
+                    {paused ? <FaPlay /> : <FaPause />}
+                    {paused ? "Reanudar" : "Pausar"}
+                </button>
+            )}
+        </div>
+    );
+};
 
 Theta_by_W_and_T.Solution = () => {
     const [theta, setTheta] = useState<string | null>(null);

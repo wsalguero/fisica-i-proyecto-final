@@ -1,6 +1,8 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import module from '../problems.module.css';
-import { FaBookOpen, FaCheckCircle } from "react-icons/fa";
+import { FaBookOpen, FaCheckCircle, FaPause, FaPlay } from "react-icons/fa";
+import { GiRaceCar } from "react-icons/gi";
+import gsap from "gsap";
 
 // PROBLEM ID: 8
 const Rmin_by_V_and_ac = () => <></>;
@@ -90,7 +92,7 @@ Rmin_by_V_and_ac.Form = () => {
                     <div className="bg-white border border-green-300 rounded-xl shadow-sm p-5 w-full transition hover:shadow-md mt-2">
                         <h3 className="text-green-700 font-bold text-lg mb-1">Resultado</h3>
                         <p className="text-sm text-gray-700">
-                            Resultado preliminar: <strong className="text-blue-600">{r}</strong>
+                            Resultado  : <strong className="text-blue-600">{r}</strong>
                         </p>
                     </div>
                 )}
@@ -100,8 +102,115 @@ Rmin_by_V_and_ac.Form = () => {
     );
 };
 
-Rmin_by_V_and_ac.GraphNode = () => <div><h3>Graph Node para Radio mínimo de giro</h3></div>;
 
+Rmin_by_V_and_ac.GraphNode = () => {
+    const nodeRef = useRef<HTMLDivElement>(null);
+    const tweenRef = useRef<gsap.core.Tween | null>(null);
+
+    const [lastValidR, setLastValidR] = useState<number | null>(null);
+    const [paused, setPaused] = useState<boolean>(false);
+    const tagName = "r-v-g";
+
+    const startAnimation = (r: number) => {
+        gsap.killTweensOf(nodeRef.current);
+        if (nodeRef.current) {
+            tweenRef.current = gsap.to(nodeRef.current, {
+                rotate: "+=360",
+                duration: Math.min(10, Math.max(2, r / 10)),
+                ease: "linear",
+                repeat: -1
+            });
+        }
+    };
+
+    const updateFromStorage = () => {
+        const value = localStorage.getItem("Rmin_by_V_and_ac__r");
+        if (value) {
+            const rValue = parseFloat(value);
+            setLastValidR(rValue);
+            startAnimation(rValue);
+            setPaused(false);
+        } else {
+            if (tweenRef.current) {
+                tweenRef.current.pause();
+            } else if (lastValidR !== null) {
+                startAnimation(lastValidR);
+                (tweenRef.current as gsap.core.Tween | null)?.pause();
+            }
+            setPaused(true);
+        }
+    };
+
+    const toggleAnimation = () => {
+        if (!tweenRef.current && lastValidR !== null) {
+            startAnimation(lastValidR);
+            setPaused(false);
+            return;
+        }
+
+        if (tweenRef.current) {
+            const isPaused = tweenRef.current.paused();
+            tweenRef.current.paused(!isPaused);
+            setPaused(!paused);
+        }
+    };
+
+    useEffect(() => {
+        updateFromStorage();
+
+        const pauseOne = (e: Event) => {
+            const event = e as CustomEvent<{ tag: string }>;
+            if (event.detail?.tag === tagName) {
+                tweenRef.current?.pause();
+                setPaused(true);
+            }
+        };
+
+        const pauseAll = () => {
+            tweenRef.current?.pause();
+            setPaused(true);
+        };
+
+        window.addEventListener("update:Rmin_by_V_and_ac__r", updateFromStorage);
+        window.addEventListener("problem:pauseAnimation", pauseOne);
+        window.addEventListener("problem:pauseAllAnimations", pauseAll);
+
+        return () => {
+            window.removeEventListener("update:Rmin_by_V_and_ac__r", updateFromStorage);
+            window.removeEventListener("problem:pauseAnimation", pauseOne);
+            window.removeEventListener("problem:pauseAllAnimations", pauseAll);
+            gsap.killTweensOf(nodeRef.current);
+        };
+    }, []);
+
+    return (
+        <div className="flex flex-col items-center justify-center w-full h-full gap-6">
+            {lastValidR !== null ? (
+                <div className="bg-blue-50 border border-blue-200 text-blue-800 rounded-lg shadow px-6 py-4 text-center w-fit">
+                    <h3 className="text-lg font-semibold">Radio mínimo detectado</h3>
+                    <p className="text-xl font-bold">{lastValidR.toFixed(2)} m</p>
+                </div>
+            ) : (
+                <p className="text-gray-400 italic">Aún no se han ingresado datos.</p>
+            )}
+
+            <div ref={nodeRef} className="text-[6rem] text-purple-500 transition-transform duration-500 ease-linear border-2 border-purple-300 rounded-full p-8 flex items-center justify-center">
+                <GiRaceCar />
+            </div>
+
+            {lastValidR !== null && (
+                <button
+                    onClick={toggleAnimation}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-md border shadow-sm text-white transition 
+                    ${paused ? "bg-green-600 hover:bg-green-700" : "bg-red-500 hover:bg-red-600"}`}
+                >
+                    {paused ? <FaPlay /> : <FaPause />}
+                    {paused ? "Reanudar" : "Pausar"}
+                </button>
+            )}
+        </div>
+    );
+};
 
 Rmin_by_V_and_ac.Solution = () => {
     const [r, setR] = useState<string | null>(null);

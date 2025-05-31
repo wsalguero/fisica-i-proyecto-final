@@ -1,6 +1,8 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import module from '../problems.module.css';
-import { FaBookOpen, FaCheckCircle } from "react-icons/fa";
+import { FaBookOpen, FaCheckCircle, FaPause, FaPlay } from "react-icons/fa";
+import { GiRadarDish } from "react-icons/gi";
+import gsap from "gsap";
 
 // PROBLEM ID: 10
 const AC_by_V_and_R = () => <></>;
@@ -86,7 +88,7 @@ AC_by_V_and_R.Form = () => {
                     <div className="bg-white border border-green-300 rounded-xl shadow-sm p-5 w-full transition hover:shadow-md mt-2">
                         <h3 className="text-green-700 font-bold text-lg mb-1">Resultado</h3>
                         <p className="text-sm text-gray-700">
-                            Resultado preliminar: <strong className="text-blue-600">{ac}</strong>
+                            Resultado  : <strong className="text-blue-600">{ac}</strong>
                         </p>
                     </div>
                 )}
@@ -95,8 +97,116 @@ AC_by_V_and_R.Form = () => {
     );
 };
 
-AC_by_V_and_R.GraphNode = () => <div><h3>Graph Node para a<sub>c</sub> = v² / r</h3></div>;
 
+AC_by_V_and_R.GraphNode = () => {
+    const nodeRef = useRef<HTMLDivElement>(null);
+    const tweenRef = useRef<gsap.core.Tween | null>(null);
+
+    const [lastValidAc, setLastValidAc] = useState<number | null>(null);
+    const [paused, setPaused] = useState<boolean>(false);
+    const tagName = "ac-v-r";
+
+    const startAnimation = (ac: number) => {
+        gsap.killTweensOf(nodeRef.current);
+        if (nodeRef.current) {
+            tweenRef.current = gsap.to(nodeRef.current, {
+                y: "-=20",
+                yoyo: true,
+                repeat: -1,
+                duration: Math.max(0.2, 3 / ac), // entre más ac, más rápido
+                ease: "power1.inOut"
+            });
+        }
+    };
+
+    const updateFromStorage = () => {
+        const value = localStorage.getItem("AC_by_V_and_R__ac");
+        if (value) {
+            const acValue = parseFloat(value);
+            setLastValidAc(acValue);
+            startAnimation(acValue);
+            setPaused(false);
+        } else {
+            if (tweenRef.current) {
+                tweenRef.current.pause();
+            } else if (lastValidAc !== null) {
+                startAnimation(lastValidAc);
+                (tweenRef.current as gsap.core.Tween | null)?.pause();
+            }
+            setPaused(true);
+        }
+    };
+
+    const toggleAnimation = () => {
+        if (!tweenRef.current && lastValidAc !== null) {
+            startAnimation(lastValidAc);
+            setPaused(false);
+            return;
+        }
+
+        if (tweenRef.current) {
+            const isPaused = tweenRef.current.paused();
+            tweenRef.current.paused(!isPaused);
+            setPaused(!paused);
+        }
+    };
+
+    useEffect(() => {
+        updateFromStorage();
+
+        const pauseOne = (e: Event) => {
+            const event = e as CustomEvent<{ tag: string }>;
+            if (event.detail?.tag === tagName) {
+                tweenRef.current?.pause();
+                setPaused(true);
+            }
+        };
+
+        const pauseAll = () => {
+            tweenRef.current?.pause();
+            setPaused(true);
+        };
+
+        window.addEventListener("update:AC_by_V_and_R__ac", updateFromStorage);
+        window.addEventListener("problem:pauseAnimation", pauseOne);
+        window.addEventListener("problem:pauseAllAnimations", pauseAll);
+
+        return () => {
+            window.removeEventListener("update:AC_by_V_and_R__ac", updateFromStorage);
+            window.removeEventListener("problem:pauseAnimation", pauseOne);
+            window.removeEventListener("problem:pauseAllAnimations", pauseAll);
+            gsap.killTweensOf(nodeRef.current);
+        };
+    }, []);
+
+    return (
+        <div className="flex flex-col items-center justify-center w-full h-full gap-6">
+            {lastValidAc !== null ? (
+                <div className="bg-blue-50 border border-blue-200 text-blue-800 rounded-lg shadow px-6 py-4 text-center w-fit">
+                    <h3 className="text-lg font-semibold">Aceleración centrípeta detectada</h3>
+                    <p className="text-xl font-bold">{lastValidAc.toExponential(2)} m/s²</p>
+                </div>
+            ) : (
+                <p className="text-gray-400 italic">Aún no se han ingresado datos.</p>
+            )}
+
+            <div ref={nodeRef} className="text-[5rem] text-purple-500 transition-transform duration-500 ease-linear border-2 border-purple-300 rounded-full p-8 flex items-center justify-center">
+                <GiRadarDish />
+            </div>
+
+            {lastValidAc !== null && (
+                <button
+                    onClick={toggleAnimation}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-md border shadow-sm text-white transition 
+                    ${paused ? "bg-green-600 hover:bg-green-700" : "bg-red-500 hover:bg-red-600"}`}
+                >
+                    {paused ? <FaPlay /> : <FaPause />}
+                    {paused ? "Reanudar" : "Pausar"}
+                </button>
+            )}
+        </div>
+    );
+};
 AC_by_V_and_R.Solution = () => {
     const [ac, setAc] = useState<string | null>(null);
     const [v, setV] = useState<string | null>(null);

@@ -1,6 +1,8 @@
-import { FormEvent, useEffect, useState } from 'react';
-import { FaBookOpen, FaCheckCircle } from "react-icons/fa";
+import { FormEvent, useEffect, useRef, useState } from 'react';
+import { FaBookOpen, FaCheckCircle, FaPause, FaPlay } from "react-icons/fa";
 import module from '../problems.module.css';
+import { BsArrowRepeat } from 'react-icons/bs';
+import gsap from "gsap";
 
 // PROBLEM ID: 5
 const WA_by_VR = () => <></>;
@@ -87,7 +89,7 @@ WA_by_VR.Form = () => {
                     <div className="bg-white border border-green-300 rounded-xl shadow-sm p-5 w-full transition hover:shadow-md mt-2">
                         <h3 className="text-green-700 font-bold text-lg mb-1">Resultado</h3>
                         <p className="text-sm text-gray-700">
-                            Resultado preliminar: <strong className="text-blue-600">{w}</strong>
+                            Resultado  : <strong className="text-blue-600">{w}</strong>
                         </p>
                     </div>
                 )}
@@ -98,9 +100,114 @@ WA_by_VR.Form = () => {
 };
 
 WA_by_VR.GraphNode = () => {
-    return <div><h3>Graph Node for ω = v / r</h3></div>;
-};
+    const wheelRef = useRef<HTMLDivElement>(null);
+    const tweenRef = useRef<gsap.core.Tween | null>(null);
 
+    const [lastValidOmega, setLastValidOmega] = useState<number | null>(null);
+    const [paused, setPaused] = useState<boolean>(false);
+
+    const tagName = "wa-by-vr";
+
+    const startAnimation = (omega: number) => {
+        gsap.killTweensOf(wheelRef.current);
+        if (wheelRef.current) {
+            tweenRef.current = gsap.to(wheelRef.current, {
+                rotate: "+=360",
+                duration: Math.max(0.5, Math.min(30, 60 / omega)),
+                ease: "linear",
+                repeat: -1,
+            });
+        }
+    };
+
+    const updateFromStorage = () => {
+        const value = localStorage.getItem("WA_by_VR__w");
+        if (value) {
+            const omega = parseFloat(value);
+            setLastValidOmega(omega);
+            startAnimation(omega);
+            setPaused(false);
+        } else {
+            if (tweenRef.current) {
+                tweenRef.current.pause();
+            } else if (lastValidOmega !== null) {
+                startAnimation(lastValidOmega);
+                (tweenRef.current as gsap.core.Tween | null)?.pause();
+            }
+            setPaused(true);
+        }
+    };
+
+    const toggleAnimation = () => {
+        if (!tweenRef.current && lastValidOmega !== null) {
+            startAnimation(lastValidOmega);
+            setPaused(false);
+            return;
+        }
+
+        if (tweenRef.current) {
+            const isPaused = tweenRef.current.paused();
+            tweenRef.current.paused(!isPaused);
+            setPaused(!paused);
+        }
+    };
+
+    useEffect(() => {
+        updateFromStorage();
+
+        const pauseOne = (e: Event) => {
+            const event = e as CustomEvent<{ tag: string }>;
+            if (event.detail?.tag === tagName) {
+                tweenRef.current?.pause();
+                setPaused(true);
+            }
+        };
+
+        const pauseAll = () => {
+            tweenRef.current?.pause();
+            setPaused(true);
+        };
+
+        window.addEventListener("update:WA_by_VR__w", updateFromStorage);
+        window.addEventListener("problem:pauseAnimation", pauseOne);
+        window.addEventListener("problem:pauseAllAnimations", pauseAll);
+
+        return () => {
+            window.removeEventListener("update:WA_by_VR__w", updateFromStorage);
+            window.removeEventListener("problem:pauseAnimation", pauseOne);
+            window.removeEventListener("problem:pauseAllAnimations", pauseAll);
+            gsap.killTweensOf(wheelRef.current);
+        };
+    }, []);
+
+    return (
+        <div className="flex flex-col items-center justify-center w-full h-full gap-6">
+            {lastValidOmega !== null ? (
+                <div className="bg-blue-50 border border-blue-200 text-blue-800 rounded-lg shadow px-6 py-4 text-center w-fit">
+                    <h3 className="text-lg font-semibold">Velocidad angular detectada</h3>
+                    <p className="text-xl font-bold">{lastValidOmega.toFixed(2)} rad/s</p>
+                </div>
+            ) : (
+                <p className="text-gray-400 italic">Aún no se han ingresado datos.</p>
+            )}
+
+            <div ref={wheelRef} className="text-[6rem] text-purple-500 transition-transform duration-500 ease-linear border-2 border-purple-300 rounded-full p-8 flex items-center justify-center">
+                <BsArrowRepeat />
+            </div>
+
+            {lastValidOmega !== null && (
+                <button
+                    onClick={toggleAnimation}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-md border shadow-sm text-white transition 
+                    ${paused ? "bg-green-600 hover:bg-green-700" : "bg-red-500 hover:bg-red-600"}`}
+                >
+                    {paused ? <FaPlay /> : <FaPause />}
+                    {paused ? "Reanudar" : "Pausar"}
+                </button>
+            )}
+        </div>
+    );
+};
 
 WA_by_VR.Solution = () => {
     const [w, setW] = useState<string | null>(null);
