@@ -14,7 +14,7 @@ const Layout = () => {
 
             <footer>
                 <div className="w-full h-16 bg-gray-800 text-white flex items-center justify-center">
-                    <p className="text-sm">© 2023 - All rights reserved</p>
+                    <p className="text-sm">© 2025 - All rights reserved</p>
                 </div>
             </footer>
         </>
